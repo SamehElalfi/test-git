@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    <?php use Illuminate\Support\Facades\Session as Session;?>?>
     <title>الملف الشخصي</title>
     <link href="{{ asset('css/profile.css') }}" rel="stylesheet">
     <style>
@@ -32,19 +33,19 @@
                         </div>
                     @endforeach
                 @endif
-                @if (\Session::has('error'))
+                @if (Session::has('error'))
                     <div class="alert alert-danger text-center" role="alert">
-                        {!! \Session::get('error') !!}
+                        {!! Session::get('error') !!}
                     </div>
                 @endif
-                @if (\Session::has('success'))
+                @if (Session::has('success'))
                     <div class="alert alert-success text-center" role="alert">
-                        {!! \Session::get('success') !!}
+                        {!! Session::get('success') !!}
                     </div>
                 @endif
-                @if (\Session::has('exist'))
+                @if (Session::has('exist'))
                     <div class="alert alert-warning text-center" role="alert">
-                        {!! \Session::get('exist') !!}
+                        {!! Session::get('exist') !!}
                     </div>
                 @endif
                 <br>
@@ -74,8 +75,11 @@
                         <div class="col-3 my-auto">
                             <h6>رقم الهاتف</h6>
                         </div>
-                        <div class="col-9">
-                            <input type="text" placeholder="رقم الهاتف..." class="form-control" value="{{ $user->phone }}" disabled>
+                        <div class="col-9" align="start">
+                            <div class="btn-group">
+                                <input type="text" placeholder="رقم الهاتف..." class="form-control" value="{{ $user->phone }}" style="border-radius: 0 5px 5px 0" disabled>
+                                <a class="btn btn-primary" onclick="togglePopupOTP()" style="border-radius: 20px 0 0 20px">تأكيد</a>
+                            </div>
                         </div>
                     </div>
                     <br>
@@ -162,7 +166,29 @@
             </div>
         </div>
     </div>
+    {{--    Pop-up OTP    --}}
+    <div class="content" id="content_otp" align="center">
+        <div align="start">
+            <button class="btn btn-outline-danger" onclick="togglePopupOTP()">X</button>
+        </div>
+        <div align="end">
+            <a class="btn btn-outline-success" onclick="get_otp()">
+                إرسال مرة اخري
+                <i class="fa-solid fa-arrow-rotate-right fa-spin"></i>
+            </a>
+        </div>
+        <br>
+        <h5>رمز تفعيل رقم الهاتف سيصلك علي شكل رسالة <span class="text-success">WhatsApp</span> مكون من 6 ارقام</h5>
+        <br>
+        <form method="post" action="{{ route('user.active.otp') }}">
+            @csrf
+            @method('POST')
 
-    <br><br>
-    <br>
+            <div class="btn-group">
+                <input name="code" maxlength="6" type="text" placeholder="رمز السري مكون من 6 ارقام" class="form-control" style="border-radius: 0 5px 5px 0" required>
+                <input type="submit" class="btn btn-primary" value="تفعيل" style="border-radius: 5px 0 0 5px">
+            </div>
+        </form>
+    </div>
+    <script src="{{ asset('js/profile.js') }}" type="text/javascript"></script>
 @endsection

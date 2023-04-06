@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <?php
-    use Illuminate\Support\Facades\Session as Session;?>
+    <?php use Illuminate\Support\Facades\Session as Session;?>
     <title>طلب رحلة جديدة</title>
     {{--    <link href="{{ asset('css/profile.css') }}" rel="stylesheet">--}}
     <style>

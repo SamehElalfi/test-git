@@ -1,9 +1,8 @@
 <?php
-use Illuminate\Support\Facades\Auth;
 //use Illuminate\Support\Facades\Session as Session;
 ?>
 
-<!doctype html>
+    <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="rtl">
 <head>
     <meta charset="utf-8">
@@ -63,45 +62,52 @@ use Illuminate\Support\Facades\Auth;
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('register') }}">إنشاء حساب</a>
                         </li>
-
                     @else
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('quiz.create') }}">طلب إستمارة</a>
+                            @if(Auth()->user()->membership == 0)
+                                <a class="nav-link" href="{{ route('quiz.create') }}">إنشاء رحلة</a>
+                            @elseif(Auth()->user()->membership == 1)
+                                <a class="nav-link" href="{{ route('driver.panel') }}">لوحة التحكم</a>
+                            @elseif(Auth()->user()->membership == 2)
+                                <a class="nav-link" href="{{ route('quiz.add.solid') }}">إنشاء رحلة</a>
+                            @elseif(Auth()->user()->membership == 3)
+                                <a class="nav-link" href="{{ route('admin.panel') }}">إدارة الموقع</a>
+                            @endif
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 الحساب
                             </a>
                             <div class="dropdown-menu px-4 text-right" aria-labelledby="navbarDropdown">
-                                <h6>اهلا وسهلا, {{ Auth::user()->name }}</h6>
+                                <h6>اهلا وسهلا, {{ Auth()->user()->name }}</h6>
                                 <h6 class="text-secondary">
                                     العضوية (
-                                    @if(Auth::user()->membership == 0)
+                                    @if(Auth()->user()->membership == 0)
                                         عميل
-                                    @elseif(Auth::user()->membership == 1)
+                                    @elseif(Auth()->user()->membership == 1)
                                         سائق
-                                    @elseif(Auth::user()->membership == 2)
+                                    @elseif(Auth()->user()->membership == 2)
                                         دعم فني
-                                    @elseif(Auth::user()->membership == 3)
+                                    @elseif(Auth()->user()->membership == 3)
                                         أدمن
                                     @endif
                                     )
                                 </h6>
                                 <hr>
-                                @if(Auth::user()->membership == 1)
+                                @if(Auth()->user()->membership == 1)
                                     <a class="dropdown-item" href="{{ route('driver.profile.edit') }}">الملف الشخصي</a>
                                 @else
                                     <a class="dropdown-item" href="{{ route('profile') }}">الملف الشخصي</a>
-                                    <a class="dropdown-item" href="{{ route('user.analytics', Auth::id()) }}">نشاطاتي</a>
+                                    <a class="dropdown-item" href="{{ route('user.analytics', Auth()->id()) }}">نشاطاتي</a>
                                 @endif
                                 <a class="dropdown-item" href="{{ route('quizzes') }}">إدارة الطلبات</a>
-                                @if(Auth::user()->membership == 1)
-                                    <a class="dropdown-item" href="{{ route('driver.analytics', Auth::user()->driver->id) }}">نشاطاتي</a>
+                                @if(Auth()->user()->membership == 1)
+                                    <a class="dropdown-item" href="{{ route('driver.analytics', Auth()->user()->driver->id) }}">نشاطاتي</a>
                                     <a class="dropdown-item" href="{{ route('driver.panel') }}">لوحة إدارة الرحلات</a>
-                                @elseif(Auth::user()->membership == 2)
-                                    <a class="dropdown-item" href="{{ route('cs.analytics', Auth::id()) }}">نشاطاتي</a>
+                                @elseif(Auth()->user()->membership == 2)
+                                    <a class="dropdown-item" href="{{ route('cs.analytics', Auth()->id()) }}">نشاطاتي</a>
                                     <a class="dropdown-item" href="{{ route('admin.panel') }}">لوحة التحكم</a>
-                                @elseif(Auth::user()->membership == 3)
+                                @elseif(Auth()->user()->membership == 3)
                                     <a class="dropdown-item" href="{{ route('admin.panel') }}">إدارة الموقع</a>
                                 @endif
                                 <br>
@@ -118,17 +124,187 @@ use Illuminate\Support\Facades\Auth;
                             </div>
                         </li>
                     @endguest
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('about_us') }}">من نحن</a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" href="{{ route('home') }}">الرئيسية <span class="sr-only">(current)</span></a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('about_us') }}">من نحن</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ route('home') }}">الرئيسية <span class="sr-only">(current)</span></a>
+                    </li>
+                        @guest
+{{--                            Nothing--}}
+                        @else
+                            <?php
+                            require_once public_path("date_sum.php");
+                            if (in_array(Auth()->user()->membership, [0, 3])){
+                                $all_notice = \App\Models\UserActivity::where('user_id', Auth()->id())->latest()->paginate(10);
+                                $seen = \App\Models\UserActivity::all()->where('user_id', Auth()->id())->where('seen', 0);
+                            }elseif (Auth()->user()->membership == 1){
+                                $all_notice = \App\Models\DriverActivity::where('driver_id', Auth()->user()->driver->id)->latest()->paginate(10);
+                                $seen = \App\Models\DriverActivity::all()->where('driver_id', Auth()->user()->driver->id)->where('seen', 0);
+                            }elseif (Auth()->user()->membership == 2){
+                                $all_notice = \App\Models\CsActivity::where('cs_id', Auth()->id())->latest()->paginate(10);
+                                $seen = \App\Models\CsActivity::all()->where('cs_id', Auth()->id())->where('seen', 0);
+                            }
+
+                            $num_notice=0;
+                            ?>
+
+                            <li class="nav-item dropdown px-1 my-lg-0 my-md-0 my-3 mx-auto" style="max-width: 100%">
+                                <a onclick="seen();$('#hot_notice').css('display', 'none')" id="navbarDropdown" class="nav-link fw-bolder" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    @if(count($seen) > 0)
+                                        <sup id="hot_notice" class="bg-danger text-white rounded-circle px-2 py-1">{{ count($seen) }}</sup>
+                                    @endif
+                                    <i class="fa-solid fa-bell fa-lg"></i>
+                                </a>
+
+                                <div id="dropdown-card" class="dropdown-menu dropdown-menu-right px-3 py-2" aria-labelledby="navbarDropdown" style="text-align: start;width: 300px">
+                                    <div class="card" id="toggle-card" style="border: none;background: none;box-shadow: none">
+                                        <h4 class="fw-bolder text-primary text-center">أحدث الإشعارات</h4>
+                                        <hr class="my-0">
+                                        <br>
+                                        @foreach($all_notice as $activity)
+                                            <?php $num_notice+=1;?>
+                                            @if(in_array(Auth()->user()->membership, [0, 3]))
+
+                                                {{--                                            User notice--}}
+                                                <div id="user-notice" class="my-0">
+                                                    @if($activity->option == 0)
+                                                        <h6 class="text-danger break3">
+                                                            لقد قمت بإنشاء طلب رحلة جديدة
+                                                            <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                                                            ...</h6>
+                                                    @elseif($activity->option == 1)
+                                                        <h6 class="text-danger break3">لقد قمت بإلغاء طلب الرحلة ...</h6>
+                                                    @elseif($activity->option == 2)
+                                                        <h6 class="text-danger break3">لقد تم تأكيد طلب رحلتك
+                                                            <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                                                            وتحويلك الي السائق
+                                                            <a href="{{ route('driver.profile', ($activity->driver->user_id ?? "000000")) }}">{{ $activity->driver->fullname ?? "محذوف" }}</a>
+                                                            ...</h6>
+                                                    @elseif($activity->option == 3)
+                                                        <h6 class="text-danger break3">لقد قام السائق
+                                                            <a href="{{ route('driver.profile', ($activity->driver->user_id ?? "000000")) }}">{{ $activity->driver->fullname ?? "محذوف" }}</a>
+                                                            بإلغاء طلب الرحلة خاصتك
+                                                            <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                                                            ...</h6>
+                                                    @elseif($activity->option == 4)
+                                                        <h6 class="text-danger break3">تهانين لقد وصلت رحلتك بنجاح
+                                                            <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                                                            ...</h6>
+                                                    @elseif($activity->option == 5)
+                                                        <h6 class="text-danger break3">لقد بدءت رحلتك للتو
+                                                            <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                                                            و السائق
+                                                            <a href="{{ route('driver.profile', ($activity->driver->user_id ?? "000000")) }}">{{ $activity->driver->fullname ?? "محذوف" }}</a>
+                                                            يتحو منطقة الإنطلاق
+                                                            ...</h6>
+                                                    @endif
+                                                    <div class="text-left"><b class="text-dark date-notice">{{ rest_date($activity->created_at) }}</b></div>
+                                                </div>
+
+                                            @elseif(Auth()->user()->membership == 1)
+
+                                                {{--                                                Driver notice--}}
+                                                <div id="driver-notice" class="my-0">
+                                                    @if($activity->option == 0)
+                                                        <h6 class="text-danger break3">
+                                                            لديك طلب رحلة
+                                                            <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                                                            بإنتظار المراجعة
+                                                            ...</h6>
+                                                    @elseif($activity->option == 1)
+                                                        <h6 class="text-danger break3">لقد قمت بإلغاء الرحلة
+                                                            <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                                                            ...</h6>
+                                                    @elseif($activity->option == 2)
+                                                        <h6 class="text-danger break3">لقد نجحت رحلتك بنجاح
+                                                            <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                                                            ...</h6>
+                                                    @elseif($activity->option == 3)
+                                                        <h6 class="text-danger break3">لقد بدءت رحلتك للتو وبإنتظار التنفيذ
+                                                            <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                                                            ...</h6>
+                                                    @endif
+                                                    <div class="text-left"><b class="text-dark date-notice">{{ rest_date($activity->created_at) }}</b></div>
+                                                </div>
+
+                                            @elseif(Auth()->user()->membership == 2)
+
+                                                {{--                                            Customer service--}}
+                                                <div id="cs-notice" class="my-0">
+                                                    @if($activity->option == 0)
+                                                        <h6 class="text-danger break3">
+                                                            تم تأكيد طلب الرحلة
+                                                            <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                                                            ...</h6>
+                                                    @elseif($activity->option == 1)
+                                                        <h6 class="text-danger break3">
+                                                            تم إلغاء طلب الرحلة
+                                                            <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                                                             ...</h6>
+                                                    @elseif($activity->option == 2)
+                                                        <h6 class="text-danger break3">
+                                                            تم وصول طلب الرحلة
+                                                            <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                                                            بنجاح
+                                                            ...</h6>
+                                                    @elseif($activity->option == 3)
+                                                        <h6 class="text-danger break3">
+                                                            تم إنشاء طلب رحلة جديدة
+                                                            <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                                                            ...</h6>
+                                                    @elseif($activity->option == 4)
+                                                        <h6 class="text-danger break3">
+                                                            تم إنشاء طلبات رحلة متعددة
+                                                            ...</h6>
+                                                    @endif
+                                                    <div class="text-left"><b class="text-dark date-notice">{{ rest_date($activity->created_at) }}</b></div>
+                                                </div>
+
+                                            @endif
+                                            <hr>
+                                            <?php if ($num_notice >= 5){break;}?>
+                                        @endforeach
+                                        <br>
+                                        @if(Auth()->user()->membership == 0)
+                                            <div class="text-center">
+                                                <a href="{{ route('user.analytics', Auth()->id()) }}" class="text-decoration-none btn btn-outline-primary" style="border-radius: 100px">
+                                                    <i class="fa-regular fa-envelope-open"></i>
+                                                    جميع الإشعارات
+                                                </a>
+                                            </div>
+                                        @elseif(Auth()->user()->membership == 1)
+                                            <div class="text-center">
+                                                <a href="{{ route('driver.analytics', Auth()->id()) }}" class="text-decoration-none btn btn-outline-primary" style="border-radius: 100px">
+                                                    <i class="fa-regular fa-envelope-open"></i>
+                                                    جميع الإشعارات
+                                                </a>
+                                            </div>
+                                        @elseif(Auth()->user()->membership == 2)
+                                            <div class="text-center">
+                                                <a href="{{ route('cs.analytics', Auth()->id()) }}" class="text-decoration-none btn btn-outline-primary" style="border-radius: 100px">
+                                                    <i class="fa-regular fa-envelope-open"></i>
+                                                    جميع الإشعارات
+                                                </a>
+                                            </div>
+                                        @elseif(Auth()->user()->membership == 3)
+                                            <div class="text-center">
+                                                <a href="{{ route('user.analytics', Auth()->id()) }}" class="text-decoration-none btn btn-outline-primary" style="border-radius: 100px">
+                                                    <i class="fa-regular fa-envelope-open"></i>
+                                                    جميع الإشعارات
+                                                </a>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </li>
+                        @endif
+
                 </ul>
-{{--                <form class="form-inline my-2 my-lg-0">--}}
-{{--                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">--}}
-{{--                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>--}}
-{{--                </form>--}}
+                {{--                <form class="form-inline my-2 my-lg-0">--}}
+                {{--                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">--}}
+                {{--                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>--}}
+                {{--                </form>--}}
             </div>
         </nav>
 
@@ -142,15 +318,15 @@ use Illuminate\Support\Facades\Auth;
             <div class="container p-4 pb-0">
                 <!-- Section: Social media -->
                 <section class="mb-4">
-                    <a class="m-1" href="#!" role="button" style="display: inline-block"><h6 class="text-white">من نحن</h6></a>
+                    <a class="m-1" href="{{ route('about_us') }}" role="button" style="display: inline-block"><h6 class="text-white">من نحن</h6></a>
 
-                    <a class="m-1" href="#!" role="button" style="display: inline-block"><h6 class="text-white">الحماية و الخصوصية</h6></a>
+                    <a class="m-1" href="{{ route('privacy') }}" role="button" style="display: inline-block"><h6 class="text-white">الحماية و الخصوصية</h6></a>
 
-                    <a class="m-1" href="#!" role="button" style="display: inline-block"><h6 class="text-white">البنود</h6></a>
+                    <a class="m-1" href="{{ route('terms') }}" role="button" style="display: inline-block"><h6 class="text-white">البنود</h6></a>
 
-                    <a class="m-1" href="#!" role="button" style="display: inline-block"><h6 class="text-white">تواصل معنا</h6></a>
+                    <a class="m-1" href="{{ route('contact_us') }}" role="button" style="display: inline-block"><h6 class="text-white">تواصل معنا</h6></a>
 
-                    <a class="m-1" href="#!" role="button" style="display: inline-block"><h6 class="text-white">الرئيسية</h6></a>
+                    <a class="m-1" href="{{ route('home') }}" role="button" style="display: inline-block"><h6 class="text-white">الرئيسية</h6></a>
                 </section>
                 <!-- Section: Social media -->
             </div>
@@ -201,5 +377,6 @@ use Illuminate\Support\Facades\Auth;
     </div>
 </section>
 <br><br>
+<script src="{{ asset('js/seen.js') }}"></script>
 </body>
 </html>

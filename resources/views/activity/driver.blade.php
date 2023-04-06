@@ -39,6 +39,11 @@
                                     وصلت رحلته بنجاح
                                     <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
                                 </td>
+                            @elseif($activity->option == 3)
+                                <td>
+                                    بدءت رحلته للتو
+                                    <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                                </td>
                             @endif
                         </tr>
                     @endforeach

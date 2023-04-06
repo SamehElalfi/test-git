@@ -12,6 +12,8 @@ class Survey extends Model
         'user_id',
         'driver_id',
         'car_id',
+        'country_id',
+        'state_id',
         'reason',
         'needs',
         'date_tour',

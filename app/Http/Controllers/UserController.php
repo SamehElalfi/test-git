@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Code_otp;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,6 +18,47 @@ class UserController extends Controller
     {
         $user = Auth::user();
         return view('user.index', compact('user'));
+    }
+
+    public function get_otp(Request $request){
+        $current_date = date("Y-m-d H:i:s");
+        $expire_date = date('Y-m-d H:i:s', strtotime($current_date. ' +3hours'));
+        $random_code = rand(0, 9) . rand(0, 9) . rand(0, 9) . rand(0, 9) . rand(0, 9) . rand(0, 9);
+
+        require_once public_path("whatsapp.php");
+        $otp_get = Code_otp::create([
+            'user_id' => Auth::id(),
+            'code' => $random_code,
+            'expire_date' => $expire_date,
+        ]);
+        send("Your Code OTP-($random_code)");
+    }
+
+    public function otp(Request $request)
+    {
+
+        $current_date = date("Y-m-d H:i:s");
+        $expire_date = date('Y-m-d H:i:s', strtotime($current_date. ' +3hours'));
+        $random_code = rand(0, 9) . rand(0, 9) . rand(0, 9) . rand(0, 9) . rand(0, 9) . rand(0, 9);
+        $code = $request->code;
+
+        $otp_get = Code_otp::where('user_id', Auth::id())->where('expire_date', '>=', $current_date)->latest()->first();
+        if ($otp_get == ""){
+            $otp_get = Code_otp::create([
+                'user_id' => Auth::id(),
+                'code' => $random_code,
+                'expire_date' => $expire_date,
+            ]);
+        }
+
+        if ($code == $otp_get->code){
+            $user = User::find(Auth::id());
+            $user->phone_verfied_at = $current_date;
+            $user->save();
+            return redirect()->back()->with('success', 'تم تأكيد رقم الهاتف بنجاح');
+        }else{
+            return redirect()->back()->with('exist','الرمز السري خاطئ برجاء كتابة الرمز الصحيح');
+        }
     }
 
     public function update(Request $request)

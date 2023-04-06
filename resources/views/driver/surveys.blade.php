@@ -33,18 +33,20 @@
                         <td>{{ $order->user->name ?? "غير موجود" }}</td>
                         <td>{{ $order->user->phone ?? "غير موجود" }}</td>
                         <td>{{ $order->user->profile->fullname ?? "غير محدد" }}</td>
-                        <td>{{ (Auth::user()->driver->state->country->name ?? "فارغ")." / ".(Auth::user()->driver->state->name ?? "فارغ") }}</td>
+                        <td>{{ (auth()->user()->driver->state->country->name ?? "فارغ")." / ".(auth()->user()->driver->state->name ?? "فارغ") }}</td>
                         <td>{{ rest_date($order->created_at) }}</td>
                         <td>
                             <b>
                                 @if($order->status == 0)
-                                    <b class="text-secondary">قيد المراجعة</b>
+                                    <b class="text-secondary">قيد المعالجة</b>
                                 @elseif($order->status == 1)
-                                    <b class="text-warning">تم تأكيد</b>
+                                    <b class="text-warning">بإنتظار التحرك</b>
                                 @elseif($order->status == 2)
-                                    <b class="text-danger">فشل الوصول</b>
+                                    <b class="text-warning">جاري التنفيذ</b>
                                 @elseif($order->status == 3)
-                                    <b class="text-success">نجح الوصول</b>
+                                    <b class="text-success">تم التوصيل بنجاح</b>
+                                @elseif($order->status == 4)
+                                    <b class="text-danger">تم الإلغاء</b>
                                 @endif
                             </b>
                         </td>

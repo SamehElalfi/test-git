@@ -17,7 +17,7 @@
             <table class="table table-bordered table-secondary table-responsive-lg">
                 <thead>
                 <th>#</th>
-                <th>اسم المستخدم</th>
+                <th>اسم العميل</th>
                 <th>رقم الهاتف</th>
                 <th>عدد الرحلات</th>
                 <th>تاريخ اخر رحلة</th>
@@ -33,7 +33,14 @@
                             </a>
                         </td>
                         <td>{{ $user->name ?? "غير موجود" }}</td>
-                        <td>{{ $user->phone ?? "غير موجود" }}</td>
+                        <td>
+                            {{ ($user->phone ?? "فارغ") . " | " }}
+                            @if($user->phone_verfied_at == null)
+                                <span class="text-danger">غير مربوط بالواتساب</span>
+                            @else
+                                <span class="text-success">مربوط بالواتساب</span>
+                            @endif
+                        </td>
                         <td>{{ count($user->surveys) }}</td>
                         <td>{{ $user->surveys[count($user->surveys)-1]->created_at ?? "لا يوجد" }}</td>
                         <td>

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    <?php use Illuminate\Support\Facades\Session as Session;?>
     <title>طلب رحلة جديدة</title>
 {{--    <link href="{{ asset('css/profile.css') }}" rel="stylesheet">--}}
     <style>
@@ -20,14 +21,14 @@
                         </div>
                     @endforeach
                 @endif
-                @if (\Session::has('success'))
+                @if (Session::has('success'))
                     <div class="alert alert-success text-center" role="alert">
-                        {!! \Session::get('success') !!}
+                        {!! Session::get('success') !!}
                     </div>
                 @endif
-                @if (\Session::has('exist'))
+                @if (Session::has('exist'))
                     <div class="alert alert-warning text-center" role="alert">
-                        {!! \Session::get('exist') !!}
+                        {!! Session::get('exist') !!}
                     </div>
                 @endif
                 <br>

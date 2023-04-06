@@ -10,6 +10,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\StaticController;
+use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\SurveyController;
 
 Auth::routes();
@@ -23,13 +24,8 @@ Route::group(['middleware' => ['auth', 'profile']], function () {
         // AdminController
         Route::get('admin/panel/users', [AdminController::class, 'users'])->name('admin.panel.users');
 
-        // UserController
-        Route::get('admin/panel/user/{user}', [UserController::class, 'info_user'])->name('admin.panel.user');
-        Route::put('admin/panel/user/update/{user}', [UserController::class, 'update_user'])->name('admin.panel.user.update');
-
-        // DriverController
-        Route::get('admin/panel/driver/{id}', [DriverController::class, 'info_driver'])->name('admin.panel.driver');
-        Route::put('admin/panel/driver/update/{id}', [DriverController::class, 'update_driver'])->name('admin.panel.driver.update');
+        //        Activities
+        Route::get('cs/activities/{id}', [ActivityController::class, 'cs'])->name('cs.activities');
     });
 
 
@@ -43,6 +39,7 @@ Route::group(['middleware' => ['auth', 'profile']], function () {
         Route::get('admin/panel/confirmed/orders', [AdminController::class, 'confirmed_orders'])->name('admin.panel.confirmed.orders');
         Route::get('admin/panel/finished/orders', [AdminController::class, 'finished_orders'])->name('admin.panel.finished.orders');
         Route::get('admin/panel/drivers', [AdminController::class, 'drivers'])->name('admin.panel.drivers');
+        Route::get('admin/panel/activities', [AdminController::class, 'activities'])->name('admin.panel.activities');
         Route::get('admin/panel/cars', [AdminController::class, 'cars'])->name('admin.panel.cars');
         Route::get('admin/panel/clients', [AdminController::class, 'clients'])->name('admin.panel.clients');
         Route::get('cs/analytics/{id}', [AdminController::class, 'analytics'])->name('cs.analytics');
@@ -52,6 +49,7 @@ Route::group(['middleware' => ['auth', 'profile']], function () {
         Route::get('user/activities/{id}', [ActivityController::class, 'user'])->name('user.activities');
         Route::get('driver/activities/{id}', [ActivityController::class, 'driver'])->name('driver.activities');
         Route::get('cs/activities/{id}', [ActivityController::class, 'cs'])->name('cs.activities');
+        Route::get('seen/all', [ActivityController::class, 'seen'])->name('seen.all');
 
 
         // Quiz
@@ -70,12 +68,24 @@ Route::group(['middleware' => ['auth', 'profile']], function () {
         Route::get('admin/panel/car/delete/{id}', [CarController::class, 'destroy'])->name('admin.panel.car.delete');
         Route::get('admin/panel/car/edit/{id}', [CarController::class, 'edit'])->name('admin.panel.car.edit');
         Route::put('admin/panel/car/update/{id}', [CarController::class, 'update'])->name('admin.panel.car.update');
+
+
+        // DriverController
+        Route::get('admin/panel/driver/{id}', [DriverController::class, 'info_driver'])->name('admin.panel.driver');
+        Route::put('admin/panel/driver/update/{id}', [DriverController::class, 'update_driver'])->name('admin.panel.driver.update');
+
+        // UserController
+        Route::get('admin/panel/user/{user}', [UserController::class, 'info_user'])->name('admin.panel.user');
+        Route::put('admin/panel/user/update/{user}', [UserController::class, 'update_user'])->name('admin.panel.user.update');
+
     });
 
 
     // User Info
     Route::get('profile', [UserController::class, 'index'])->name('profile');
     Route::put('user/update', [UserController::class, 'update'])->name('user.update');
+    Route::get('user/get_otp', [UserController::class, 'get_otp'])->name('user.get_otp');
+    Route::post('user/active/otp', [UserController::class, 'otp'])->name('user.active.otp');
 
 
     Route::group(['middleware' => ['analytics']], function () {
@@ -92,7 +102,9 @@ Route::group(['middleware' => ['auth', 'profile']], function () {
         Route::put('driver/profile/update', [DriverController::class, 'update'])->name('driver.profile.update');
         Route::get('driver/panel', [DriverController::class, 'panel'])->name('driver.panel');
         Route::get('driver/panel/users', [DriverController::class, 'users'])->name('driver.panel.users');
-        Route::get('driver/panel/orders', [DriverController::class, 'surveys'])->name('driver.panel.orders');
+        Route::get('driver/panel/orders', [DriverController::class, 'orders'])->name('driver.panel.orders');
+        Route::get('driver/panel/pending/orders', [DriverController::class, 'pending_orders'])->name('driver.panel.pending.orders');
+        Route::get('driver/panel/finished/orders', [DriverController::class, 'done_orders'])->name('driver.panel.finished.orders');
         Route::get('driver/analytics/{id}', [DriverController::class, 'analytics'])->name('driver.analytics');
     });
 
@@ -110,7 +122,16 @@ Route::group(['middleware' => ['auth', 'profile']], function () {
     Route::get('quiz/edit/{slug}', [SurveyController::class, 'edit'])->name('quiz.edit');
     Route::get('quiz/cancel/{id}', [SurveyController::class, 'cancel'])->name('quiz.cancel');
     Route::get('quiz/success/{id}', [SurveyController::class, 'succeed'])->name('quiz.success');
+
+
+    //        Activities
+    Route::get('seen/all', [ActivityController::class, 'seen'])->name('seen.all');
 });
+
+
+//        Google Authentication
+Route::get('auth_redirect', [SocialAuthController::class, 'redirect'])->name('auth_redirect');
+Route::get('auth_callback', [SocialAuthController::class, 'callback'])->name('auth_callback');
 
 
 // Static Pages

@@ -31,7 +31,14 @@
                     <tr>
                         <td>#{{ $user->id }}</td>
                         <td>{{ $user->driver->fullname ?? "فارغ" }}</td>
-                        <td>{{ $user->phone ?? "فارغ" }}</td>
+                        <td>
+                            {{ ($user->phone ?? "فارغ") . " | " }}
+                            @if($user->phone_verfied_at == null)
+                                <span class="text-danger">غير مربوط بالواتساب</span>
+                            @else
+                                <span class="text-success">مربوط بالواتساب</span>
+                            @endif
+                        </td>
                         <td>{{ $user->driver->country->name ?? "غير محدد" }}</td>
                         <td>{{ $user->driver->state->name ?? "غير محدد" }}</td>
                         <td>{{ rest_date($user->created_at) }}</td>

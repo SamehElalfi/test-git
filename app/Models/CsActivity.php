@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CsActivity extends Model
 {
     protected $fillable = [
+        'cs_id',
         'user_id',
         'driver_id',
         'survey_id',
@@ -19,6 +20,11 @@ class CsActivity extends Model
     public function user()
     {
         return $this->belongsTo('App\Models\User', 'user_id');
+    }
+
+    public function cs()
+    {
+        return $this->belongsTo('App\Models\User', 'cs_id');
     }
 
     public function driver()

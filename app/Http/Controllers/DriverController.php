@@ -81,7 +81,7 @@ class DriverController extends Controller
         return view('driver.users', compact('users'));
     }
 
-    public function surveys(Request $request)
+    public function orders(Request $request)
     {
         $from = date($request->from ?? date('Y-m-d', strtotime("-7 days")));
         $to = date($request->to ?? date('Y-m-d', strtotime("+1 days")));
@@ -95,8 +95,78 @@ class DriverController extends Controller
             ->join('users', 'users.id', '=', 'surveys.user_id')
             ->join('drivers', 'drivers.id', '=', 'surveys.driver_id')
             ->select('surveys.*')
-            ->where('drivers.user_id', Auth::id())
             ->orderBy('surveys.' . $sorter, $arrange)
+            ->where('drivers.user_id', Auth::id())
+            ->whereBetween('surveys.created_at', [$from, $to])
+            ->where(function ($contents) {
+                if (isset($_GET['doc_name'])) {
+                    $search = '%' . $_GET['search'] . '%';
+                } else {
+                    $search = '%%';
+                }
+            })
+            ->get();
+        $id_surveys = [];
+        foreach ($surveys as $survey) {
+            $id_surveys[] = $survey->id;
+            //            echo "ID:- $survey->id" . "<br>";
+        }
+        $orders = Survey::whereIn("id", $id_surveys)->latest()->paginate(20);
+        return view('driver.surveys', compact('orders'));
+    }
+
+    public function done_orders(Request $request)
+    {
+        $from = date($request->from ?? date('Y-m-d', strtotime("-7 days")));
+        $to = date($request->to ?? date('Y-m-d', strtotime("+1 days")));
+
+        $sort = $_GET['sort'] ?? 'created_at$$$DESC';
+        $sorter_array = explode('$$$', $sort);
+        $sorter = $sorter_array[0];
+        $arrange = $sorter_array[1];
+
+        $surveys = DB::table('surveys')
+            ->join('users', 'users.id', '=', 'surveys.user_id')
+            ->join('drivers', 'drivers.id', '=', 'surveys.driver_id')
+            ->select('surveys.*')
+            ->orderBy('surveys.' . $sorter, $arrange)
+            ->where('drivers.user_id', Auth::id())
+            ->whereIn('surveys.status', [3, 4])
+            ->whereBetween('surveys.created_at', [$from, $to])
+            ->where(function ($contents) {
+                if (isset($_GET['doc_name'])) {
+                    $search = '%' . $_GET['search'] . '%';
+                } else {
+                    $search = '%%';
+                }
+            })
+            ->get();
+        $id_surveys = [];
+        foreach ($surveys as $survey) {
+            $id_surveys[] = $survey->id;
+            //            echo "ID:- $survey->id" . "<br>";
+        }
+        $orders = Survey::whereIn("id", $id_surveys)->latest()->paginate(20);
+        return view('driver.surveys', compact('orders'));
+    }
+
+    public function pending_orders(Request $request)
+    {
+        $from = date($request->from ?? date('Y-m-d', strtotime("-7 days")));
+        $to = date($request->to ?? date('Y-m-d', strtotime("+1 days")));
+
+        $sort = $_GET['sort'] ?? 'created_at$$$DESC';
+        $sorter_array = explode('$$$', $sort);
+        $sorter = $sorter_array[0];
+        $arrange = $sorter_array[1];
+
+        $surveys = DB::table('surveys')
+            ->join('users', 'users.id', '=', 'surveys.user_id')
+            ->join('drivers', 'drivers.id', '=', 'surveys.driver_id')
+            ->select('surveys.*')
+            ->orderBy('surveys.' . $sorter, $arrange)
+            ->where('drivers.user_id', Auth::id())
+            ->whereIn('surveys.status', [1, 2])
             ->whereBetween('surveys.created_at', [$from, $to])
             ->where(function ($contents) {
                 if (isset($_GET['doc_name'])) {

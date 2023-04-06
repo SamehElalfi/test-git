@@ -10,19 +10,20 @@
     <div class="container-xl">
         <div class="card shadow-lg bg-white py-4 px-4" style="border-radius: 40px">
             <div align="center">
-                @if(Auth::user()->membership == 2 or Auth::user()->membership == 3)
-                    <div align="start">
-                        <a href="{{ route('quiz.edit', $order->slug) }}" class="btn btn-outline-primary">
-                            <i class="fa-solid fa-pen"></i>
-                            تعديل البيانات
-                        </a>
-                    </div>
-                @else
+                @if(auth()->user()->membership >= 2 or $order->user_id == Auth()->user()->id)
                     <div align="end">
                         <a href="#" onclick="history.back()">
                             <i class="fa-solid fa-circle-left fa-2x"></i>
                         </a>
                     </div>
+                    @if($order->status == 0)
+                        <div align="start">
+                            <a href="{{ route('quiz.edit', $order->slug) }}" class="btn btn-outline-primary">
+                                <i class="fa-solid fa-pen"></i>
+                                تعديل البيانات
+                            </a>
+                        </div>
+                    @endif
                 @endif
                 <h3 id="text-step-1" class="text-primary">عرض بيانات الطلب #{{ $order->slug }}</h3>
                 <hr>
@@ -119,7 +120,7 @@
                             </h6>
                         </div>
                         <div class="col-9">
-                            <input type="text" placeholder="اسم المستفيد..." name="name" class="form-control" value="{{ $user->profile->fullname }}" disabled>
+                            <input type="text" placeholder="اسم المستفيد..." name="name" class="form-control" value="{{ $user->profile->fullname ?? "فارغ" }}" disabled>
                         </div>
                     </div>
 
@@ -255,13 +256,13 @@
                     @if($order->status < 2)
                         <a href="{{ route('quiz.cancel', $order->id) }}" class="btn btn-outline-danger mx-3" style="display: inline-block">إلغاء الرحلة</a>
                         @if($order->status == 1)
-                            @if(Auth::user()->membership < 2)
+                            @if(auth()->user()->membership < 2)
                                 <a href="{{ route('quiz.success', $order->id) }}" class="btn btn-success mx-3" style="display: inline-block">تمت الرحلة</a>
                             @endif
                         @endif
                         <br><br>
                     @endif
-                    @if(Auth::user()->membership == 2 or Auth::user()->membership == 3)
+                    @if(auth()->user()->membership == 2 or auth()->user()->membership == 3)
                         <div id="status" class="row">
                             <div class="col-3 my-auto">
                                 <h6>معالجة الرحلة</h6>

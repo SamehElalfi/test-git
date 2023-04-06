@@ -21,7 +21,7 @@
                 <th>رقم الهاتف</th>
                 <th>عدد الرحلات</th>
                 <th>تاريخ اخر رحلة</th>
-                <th>العضوية</th>
+{{--                <th>العضوية</th>--}}
                 </thead>
                 <tbody>
                 <?php require_once public_path('date_sum.php')?>
@@ -32,19 +32,19 @@
                         <td>{{ $user->phone ?? "غير موجود" }}</td>
                         <td>{{ count($user->surveys) }}</td>
                         <td>{{ $user->surveys[0]->created_at }}</td>
-                        <td>
-                            <b>
-                                @if($user->membership == 0)
-                                    عميل
-                                @elseif($user->membership == 1)
-                                    سائق
-                                @elseif($user->membership == 2)
-                                    دعم فني
-                                @elseif($user->membership == 3)
-                                    أدمن
-                                @endif
-                            </b>
-                        </td>
+{{--                        <td>--}}
+{{--                            <b>--}}
+{{--                                @if($user->membership == 0)--}}
+{{--                                    عميل--}}
+{{--                                @elseif($user->membership == 1)--}}
+{{--                                    سائق--}}
+{{--                                @elseif($user->membership == 2)--}}
+{{--                                    دعم فني--}}
+{{--                                @elseif($user->membership == 3)--}}
+{{--                                    أدمن--}}
+{{--                                @endif--}}
+{{--                            </b>--}}
+{{--                        </td>--}}
                     </tr>
                 @endforeach
                 </tbody>

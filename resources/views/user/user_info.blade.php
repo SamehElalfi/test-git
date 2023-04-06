@@ -1,13 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
+    <?php use Illuminate\Support\Facades\Session as Session;?>
     <title>الملف الشخصي</title>
     <link href="{{ asset('css/profile.css') }}" rel="stylesheet">
     <div class="container-xl">
         <div class="card shadow-lg bg-white py-4 px-4" style="border-radius: 40px">
             <div align="center">
                 <div align="start">
-                    <a href="{{ route('admin.panel.users') }}" class="btn btn-dark">الرجوع</a>
+                    @if(Auth()->user()->membership == 3)
+                        <a href="{{ route('admin.panel.users') }}" class="btn btn-dark">الرجوع</a>
+                    @elseif(Auth()->user()->membership == 2)
+                        <a href="#" onclick="history.back()" class="btn btn-dark">الرجوع</a>
+                    @elseif(Auth()->user()->membership == 1)
+                        <a href="#" onclick="history.back()" class="btn btn-dark">الرجوع</a>
+                    @elseif(Auth()->user()->membership == 0)
+                        <a href="#" onclick="history.back()" class="btn btn-dark">الرجوع</a>
+                    @endif
                 </div>
                 <h3>بيانات المستخدم</h3>
                 <hr>
@@ -24,14 +33,14 @@
                         </div>
                     @endforeach
                 @endif
-                @if (\Session::has('success'))
+                @if (Session::has('success'))
                     <div class="alert alert-success text-center" role="alert">
-                        {!! \Session::get('success') !!}
+                        {!! Session::get('success') !!}
                     </div>
                 @endif
-                @if (\Session::has('exist'))
+                @if (Session::has('exist'))
                     <div class="alert alert-warning text-center" role="alert">
-                        {!! \Session::get('exist') !!}
+                        {!! Session::get('exist') !!}
                     </div>
                 @endif
                 <br>

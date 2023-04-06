@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <title>الملف الشخصي</title>
+    <?php use Illuminate\Support\Facades\Session as Session;?>
+    <title>معلومات الحساب</title>
     <link href="{{ asset('css/profile.css') }}" rel="stylesheet">
     <style>
         .content {
@@ -16,7 +17,7 @@
                         <i class="fa-solid fa-circle-left fa-2x"></i>
                     </a>
                 </div>
-                <h3>معلومات المستخدم</h3>
+                <h3>معلومات عن السائق</h3>
                 <hr>
                 <div class="row">
                     <div id="container-img-user" align="center" style="margin: auto auto;position:relative;" onclick="$('input[type=file]').click()">
@@ -34,19 +35,19 @@
                         </div>
                     @endforeach
                 @endif
-                @if (\Session::has('error'))
+                @if (Session::has('error'))
                     <div class="alert alert-danger text-center" role="alert">
-                        {!! \Session::get('error') !!}
+                        {!! Session::get('error') !!}
                     </div>
                 @endif
-                @if (\Session::has('success'))
+                @if (Session::has('success'))
                     <div class="alert alert-success text-center" role="alert">
-                        {!! \Session::get('success') !!}
+                        {!! Session::get('success') !!}
                     </div>
                 @endif
-                @if (\Session::has('exist'))
+                @if (Session::has('exist'))
                     <div class="alert alert-warning text-center" role="alert">
-                        {!! \Session::get('exist') !!}
+                        {!! Session::get('exist') !!}
                     </div>
                 @endif
                 <br>
@@ -134,19 +135,7 @@
                         </div>
                     </div>
                     <br>
-                    <div class="row">
-                        <div class="col-3 my-auto">
-                            <h6>كلمة السر القديمة</h6>
-                        </div>
-                        <div class="col-9">
-                            <input type="password" placeholder="******" name="password" class="form-control">
-                        </div>
-                    </div>
-                    <br>
-                    <div id="btn-change-password" class="row px-5" align="center" onclick="$('#btn-change-password').toggle();$('#new-password-input').toggle()">
-                        <a class="btn btn-primary">تغيير كلمة السر</a>
-                    </div>
-                    <div id="new-password-input" style="display: none">
+                    <div id="new-password-input">
                         <div class="row">
                             <div class="col-3 my-auto">
                                 <h6>كلمة السر الجديدة</h6>

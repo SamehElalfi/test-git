@@ -30,7 +30,14 @@
                     <tr>
                         <td>#{{ $user->id }}</td>
                         <td>{{ $user->name }}</td>
-                        <td>{{ $user->phone ?? "فارغ" }}</td>
+                        <td>
+                            {{ ($user->phone ?? "فارغ") . " | " }}
+                            @if($user->phone_verfied_at == null)
+                                <span class="text-danger">غير مربوط بالواتساب</span>
+                            @else
+                                <span class="text-success">مربوط بالواتساب</span>
+                            @endif
+                        </td>
                         <td>{{ $user->email ?? "فارغ" }}</td>
                         <td>
                             <b>

@@ -47,6 +47,13 @@
                                 <td>تهانين لقد وصلت رحلتك بنجاح
                                     <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
                                 </td>
+                            @elseif($activity->option == 5)
+                                <td>لقد بدءت رحلتك للتو
+                                    <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                                    و السائق
+                                    <a href="{{ route('driver.profile', ($activity->driver->user_id ?? "000000")) }}">{{ $activity->driver->fullname ?? "محذوف" }}</a>
+                                    يتحو منطقة الإنطلاق
+                                </td>
                             @endif
                         </tr>
                     @endforeach

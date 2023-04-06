@@ -7,6 +7,7 @@ use App\Models\DriverActivity;
 use App\Models\Survey;
 use App\Models\User;
 use App\Models\UserActivity;
+use Illuminate\Support\Facades\Auth;
 
 class ActivityController extends Controller
 {
@@ -44,7 +45,35 @@ class ActivityController extends Controller
 
     public function cs($id)
     {
-        $activities = CsActivity::all()->where('user_id', $id);
-        return view('admin.index', compact('activities'));
+        $activities = CsActivity::all()->where('cs_id', $id);
+        return view('activity.cs', compact('activities'));
+    }
+
+    public function seen()
+    {
+        $user_id = Auth::id();
+        $driver_id = Auth::user()->driver->id ?? Auth::id();
+        if (in_array(Auth::user()->membership, [0, 3])){
+            $activities = UserActivity::all()->where('user_id', $user_id)->where('seen', 0);
+            foreach ($activities as $sol_activity){
+                $activity = UserActivity::find($sol_activity->id);
+                $activity->seen = 1;
+                $activity->save();
+            }
+        }elseif (Auth::user()->membership == 1){
+            $activities = DriverActivity::all()->where('driver_id', $driver_id)->where('seen', 0);
+            foreach ($activities as $sol_activity){
+                $activity = DriverActivity::find($sol_activity->id);
+                $activity->seen = 1;
+                $activity->save();
+            }
+        }elseif (Auth::user()->membership == 2){
+            $activities = CsActivity::all()->where('cs_id', $user_id)->where('seen', 0);
+            foreach ($activities as $sol_activity){
+                $activity = CsActivity::find($sol_activity->id);
+                $activity->seen = 1;
+                $activity->save();
+            }
+        }
     }
 }

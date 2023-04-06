@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <title>إدارة الرحلات</title>
+    <title>إدارة نشاطات موظفين خدمة العملاء</title>
     <div class="container-xl">
         <div class="card shadow-lg bg-white py-4 px-4" style="border-radius: 40px">
             <div align="end">
@@ -9,22 +9,12 @@
                     لوحة التحكم
                 </a>
             </div>
-            <h3 class="text-primary text-center">إدارة الرحلات</h3>
+            <h3 class="text-primary text-center">إدارة نشاطات موظفين خدمة العملاء</h3>
             <br>
             <?php require_once public_path("panel_admin.php")?>
             <hr>
-            <div align="start">
-                <a href="{{ route('quiz.add.solid') }}" style="display: inline-block" class="btn btn-outline-success px-2">
-                    <i class="fa-solid fa-plus"></i>
-                    اضافة رحلة
-                </a>
-                <a style="display: inline-block" href="{{ route('quiz.add.multiple') }}" class="btn btn-outline-danger px-2">
-                    <i class="fa-solid fa-list"></i>
-                    اضافة رحلات متعددة
-                </a>
-            </div>
-            <hr>
-            {{--            Sort bar--}}
+
+{{--            Sort bar--}}
             <div id="sort-bar">
                 <form method="get">
                     @csrf
@@ -41,7 +31,7 @@
                     $state = $_GET['state'] ?? 'all';
                     ?>
                     <div class="row">
-                        {{--                        Sort By--}}
+{{--                        Sort By--}}
                         <div class="col-6 my-2">
                             <div class="row">
                                 <div class="col-5">
@@ -58,7 +48,7 @@
                             </div>
                         </div>
 
-                        {{--                        Date From, To--}}
+{{--                        Date From, To--}}
                         <div class="col-6 my-2">
                             <div class="row">
                                 <div class="col-1">
@@ -76,12 +66,12 @@
                             </div>
                         </div>
 
-                        {{--                        Search--}}
+{{--                        Search--}}
                         <div class="col-6 my-2">
                             <input type="search" name="search" class="form-control" placeholder="ابحث عن..." value="{{ $search ?? "" }}">
                         </div>
 
-                        {{--                        Status--}}
+{{--                        Status--}}
                         <div class="col-6 my-2">
                             <div class="row">
                                 <div class="col-3">
@@ -100,7 +90,7 @@
                             </div>
                         </div>
 
-                        {{--                        Countries--}}
+{{--                        Countries--}}
                         <div class="col-6 my-2">
                             <div class="row">
                                 <div class="col-3">
@@ -117,7 +107,7 @@
                             </div>
                         </div>
 
-                        {{--                        States--}}
+{{--                        States--}}
                         <div class="col-6 my-2">
                             <div class="row">
                                 <div class="col-3">
@@ -134,83 +124,69 @@
                             </div>
                         </div>
 
-                        {{--                        Submit--}}
+{{--                        Submit--}}
                         <div class="col-6 my-3">
                             <input type="submit" class="btn btn-primary" value="فرز" style="margin: auto auto">
                         </div>
                     </div>
                 </form>
             </div>
-
             <br>
             <table class="table table-bordered table-secondary table-responsive-lg">
                 <thead>
                 <th>#</th>
-                <th>السائق</th>
-                <th>إسم العميل</th>
-                <th>رقم السيارة</th>
-                <th>موعد بدء الرحلة</th>
-                <th>مكان الإقلاع</th>
-                <th>مكان الوصول</th>
-                <th>تاريخ الإنشاء</th>
-                <th>الحالة</th>
+                <th>اسم المستخدم</th>
+                <th>رقم الهاتف</th>
+                <th>النشاط</th>
+                <th>التاريخ</th>
                 <th>الحدث</th>
                 </thead>
                 <tbody>
                 <?php require_once public_path('date_sum.php')?>
-                @foreach($orders as $order)
+                @foreach($activities as $activity)
                     <tr>
+                        <td>#{{ $activity->id }}</td>
+                        <td>{{ $activity->cs->name ?? "محذوف" }}</td>
+                        <td>{{ $activity->cs->phone ?? "فارغ" }}</td>
+                        @if($activity->option == 0)
+                            <td>
+                                قام
+                                <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                بتأكيد طلب الرحلة
+                                <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                            </td>
+                        @elseif($activity->option == 1)
+                            <td>
+                                قام
+                                <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                بإلغاء طلب الرحلة
+                                <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                            </td>
+                        @elseif($activity->option == 2)
+                            <td>
+                                قام
+                                <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                بتمييز طلب الرحلة
+                                <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                                كرحلة ناجحة
+                            </td>
+                        @elseif($activity->option == 3)
+                            <td>
+                                قام
+                                <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                بإنشاء طلب رحلة جديد
+                                <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
+                            </td>
+                        @elseif($activity->option == 4)
+                            <td>
+                                قام
+                                <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                بإنشاء طلبات رحلة متعددة
+                            </td>
+                        @endif
+                        <td>{{ $activity->created_at ?? "غير محدد" }}</td>
                         <td>
-                            <a href="{{ route('quiz.show', $order->slug) }}" class="text-decoration-none text-primary">
-                                #{{ $order->slug }}
-                            </a>
-                        </td>
-                        <td>
-                            @if(isset($order->driver))
-                                <a href="{{ route('driver.profile', $order->driver->user_id) }}">{{ $order->driver->fullname ?? "غير محدد" }}</a>
-                            @else
-                                غير محدد
-                            @endif
-                        </td>
-                        <td>
-                            @if(isset($order->user))
-                                <a href="{{ route('admin.panel.user', $order->user_id) }}">{{ $order->user->name ?? "فارغ" }}</a>
-                            @else
-                                غير محدد
-                            @endif
-                        </td>
-                        <td>{{ $order->car->number ?? "غير محدد" }}</td>
-                        <td>{{ ($order->date_tour ?? "غير محدد").($order->time_date_tour ?? "غير محدد") }}</td>
-                        <td>{{ $order->start_point ?? "فارغ" }}</td>
-                        <td>{{ $order->end_point ?? "فارغ" }}</td>
-                        <td>{{ rest_date($order->created_at) }}</td>
-                        <td>
-                            @if($order->status == 0)
-                                <div class="alert alert-secondary">
-                                    <b>قيد المعالجة</b>
-                                </div>
-                            @elseif($order->status == 1)
-                                <div class="alert alert-warning">
-                                    <b>بإنتظار التحرك</b>
-                                </div>
-                            @elseif($order->status == 2)
-                                <div class="alert alert-warning">
-                                    <b>جاري التنفيذ</b>
-                                </div>
-                            @elseif($order->status == 3)
-                                <div class="alert alert-success">
-                                    <b>تم التوصيل بنجاح</b>
-                                </div>
-                            @elseif($order->status == 4)
-                                <div class="alert alert-danger">
-                                    <b>تم الإلغاء</b>
-                                </div>
-                            @endif
-                        </td>
-                        <td>
-                            <a href="{{ route('quiz.process', $order->id) }}" class="text-decoration-none btn btn-primary">
-                                معالجة_الطلب
-                            </a>
+                            <a href="{{ route("cs.activities", $activity->cs_id) }}" class="btn btn-primary">إطلاع</a>
                         </td>
                     </tr>
                 @endforeach

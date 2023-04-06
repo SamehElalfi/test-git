@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
     <a href="/admin/panel/cars" class="btn btn-outline-primary" style="border-radius: 0">السيارات</a>
     <?php if(Auth::user()->membership == 3){?>
         <a href="/admin/panel/users" class="btn btn-outline-primary" style="border-radius: 0">المستخدمين</a>
+        <a href="/admin/panel/activities" class="btn btn-outline-primary" style="border-radius: 0">النشاطات</a>
     <?php }?>
     <a href="/admin/panel/drivers" class="btn btn-outline-primary" style="border-radius: 100px 0 0 100px">السائقين</a>
 </div>

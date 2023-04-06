@@ -9,7 +9,7 @@
                     لوحة التحكم
                 </a>
             </div>
-            <h3 class="text-primary text-center">إدارة الرحلات</h3>
+            <h3 class="text-primary text-center">إدارة الرحلات جاري التنفيذ</h3>
             <br>
             <?php require_once public_path("panel_admin.php")?>
             <hr>
@@ -42,7 +42,7 @@
                 @foreach($orders as $order)
                     <tr>
                         <td>
-                            <a target="_blank" href="{{ route('quiz.show', $order->slug) }}" class="text-decoration-none text-primary">
+                            <a href="{{ route('quiz.show', $order->slug) }}" class="text-decoration-none text-primary">
                                 #{{ $order->slug }}
                             </a>
                         </td>
@@ -55,7 +55,7 @@
                         </td>
                         <td>
                             @if(isset($order->user))
-                                <a target="_blank" href="{{ route('admin.panel.user', $order->user_id) }}">{{ $order->user->name ?? "فارغ" }}</a>
+                                <a href="{{ route('admin.panel.user', $order->user_id) }}">{{ $order->user->name ?? "فارغ" }}</a>
                             @else
                                 غير محدد
                             @endif

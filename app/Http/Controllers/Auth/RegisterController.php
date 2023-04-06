@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use http\Env\Request;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -62,12 +63,17 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\Models\User
      */
-    protected function create(array $data)
+    protected function create(Request $request)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+        $users = User::where('email', ($request->email ?? $request->name.time()))->orwhere('phone', $request->phone)->get();
+        if (count($users) >= 1){
+            return redirect()->back()->with('exist', 'هذا الحساب مسجل بالفعل');
+        }
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email ?? $request->name.time(),
+            'phone' => $request->phone,
+            'password' => Hash::make($request->password),
         ]);
     }
 }
