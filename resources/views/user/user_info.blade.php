@@ -49,10 +49,19 @@
                     @method('PUT')
                     <div class="row">
                         <div class="col-3 my-auto">
+                            <h6>رقم العميل</h6>
+                        </div>
+                        <div class="col-9">
+                            <input type="text" name="id" class="form-control" value="#{{ $user->id }}" disabled>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-3 my-auto">
                             <h6>اسم المستخدم</h6>
                         </div>
                         <div class="col-9">
-                            <input type="text" placeholder="اسم المستخدم" name="name" class="form-control" value="{{ $user->name }}" required>
+                            <input type="text" placeholder="اسم المستخدم" name="name" class="form-control" value="{{ $user->name }}" >
                         </div>
                     </div>
                     <br>
@@ -74,104 +83,114 @@
                         </div>
                     </div>
                     <br>
-                    <div class="row">
-                        <div class="col-3 my-auto">
-                            <h6>اسم المستفيد بالخدمة</h6>
+                    @if($user->membership == 0)
+                        <div class="row">
+                            <div class="col-3 my-auto">
+                                <h6>اسم المستفيد بالخدمة</h6>
+                            </div>
+                            <div class="col-9">
+                                <input type="text" placeholder="اسم المستفيد..." name="fullname" class="form-control" value="{{ $user->profile->fullname ?? "" }}" >
+                            </div>
                         </div>
-                        <div class="col-9">
-                            <input type="text" placeholder="اسم المستفيد..." name="fullname" class="form-control" value="{{ $user->profile->fullname ?? "" }}" required>
+                        <br>
+                        <div class="row">
+                            <div class="col-3 my-auto">
+                                <h6>جنس المستفيد</h6>
+                            </div>
+                            <div class="col-9">
+                                @if(isset($user->profile->gender))
+                                    <select class="form-control" name="gender">
+                                        <option value="1" {{ ($user->profile->gender == 1) ? "selected":"" }}>ذكر</option>
+                                        <option value="0" {{ ($user->profile->gender == 0) ? "selected":"" }}>انثي</option>
+                                    </select>
+                                @else
+                                    <select class="form-control" name="gender">
+                                        <option value="1" selected>ذكر</option>
+                                        <option value="0">انثي</option>
+                                    </select>
+                                @endif
+                            </div>
                         </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-3 my-auto">
-                            <h6>جنس المستفيد</h6>
+                        <br>
+                        <div class="row">
+                            <div class="col-3 my-auto">
+                                <h6>العمر</h6>
+                            </div>
+                            <div class="col-9">
+                                <input type="number" placeholder="العمر..." class="form-control" name="age" value="{{ $user->profile->age ?? "" }}" >
+                            </div>
                         </div>
-                        <div class="col-9">
-                            @if(isset($user->profile->gender))
-                                <select class="form-control" name="gender">
-                                    <option value="1" {{ ($user->profile->gender == 1) ? "selected":"" }}>ذكر</option>
-                                    <option value="0" {{ ($user->profile->gender == 0) ? "selected":"" }}>انثي</option>
-                                </select>
-                            @else
-                                <select class="form-control" name="gender">
-                                    <option value="1" selected>ذكر</option>
-                                    <option value="0">انثي</option>
-                                </select>
-                            @endif
+                        <br>
+                        <div class="row">
+                            <div class="col-3 my-auto">
+                                <h6>رقم هاتف منشئ الخدمة</h6>
+                            </div>
+                            <div class="col-9">
+                                <input type="tel" placeholder="رقم هاتف منشئ الخدمة..." name="other_phone" class="form-control" value="{{ $user->profile->other_phone ?? "" }}" >
+                            </div>
                         </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-3 my-auto">
-                            <h6>العمر</h6>
+                        <br>
+                        <div class="row">
+                            <div class="col-3 my-auto">
+                                <h6>صفتك بالمستفيد</h6>
+                            </div>
+                            <div class="col-9">
+                                @if(isset($user->profile->relation))
+                                    <select class="form-control" name="relation">
+                                        <option value="الابن" {{ ($user->profile->relation == "الابن") ? "selected":"" }}>الابن</option>
+                                        <option value="الوالد" {{ ($user->profile->relation == "الوالد") ? "selected":"" }}>الوالد</option>
+                                        <option value="الزوجة" {{ ($user->profile->relation == "الزوجة") ? "selected":"" }}>الزوجة</option>
+                                        <option value="الزوج" {{ ($user->profile->relation == "الزوج") ? "selected":"" }}>الزوج</option>
+                                        <option value="المستفيد نفسه" {{ ($user->profile->relation == "المستفيد نفسه") ? "selected":"" }}>المستفيد نفسه</option>
+                                    </select>
+                                @else
+                                    <select class="form-control" name="relation">
+                                        <option value="الابن">الابن</option>
+                                        <option value="الوالد">الوالد</option>
+                                        <option value="الزوجة">الزوجة</option>
+                                        <option value="الزوج">الزوج</option>
+                                        <option value="المستفيد نفسه">المستفيد نفسه</option>
+                                    </select>
+                                @endif
+                            </div>
                         </div>
-                        <div class="col-9">
-                            <input type="number" placeholder="العمر..." class="form-control" name="age" value="{{ $user->profile->age ?? "" }}" required>
+                        <br>
+                        <div class="row">
+                            <div class="col-3 my-auto">
+                                <h6>جئت من طرف</h6>
+                            </div>
+                            <div class="col-9">
+                                @if(isset($user->profile->redirect))
+                                    <select class="form-control" name="redirect">
+                                        <option value="جوجل" {{ ($user->profile->redirect == "جوجل") ? "selected":"" }}>جوجل</option>
+                                        <option value="احد الاصدقاء" {{ ($user->profile->redirect == "احد الاصدقاء") ? "selected":"" }}>احد الاصدقاء</option>
+                                        <option value="منصة تواصل اجتماعي" {{ ($user->profile->redirect == "منصة تواصل اجتماعي") ? "selected":"" }}>منصة تواصل اجتماعي</option>
+                                    </select>
+                                @else
+                                    <select class="form-control" name="redirect">
+                                        <option value="جوجل">جوجل</option>
+                                        <option value="احد الاصدقاء">احد الاصدقاء</option>
+                                        <option value="منصة تواصل اجتماعي">منصة تواصل اجتماعي</option>
+                                    </select>
+                                @endif
+                            </div>
                         </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-3 my-auto">
-                            <h6>رقم هاتف منشئ الخدمة</h6>
-                        </div>
-                        <div class="col-9">
-                            <input type="tel" placeholder="رقم هاتف منشئ الخدمة..." name="other_phone" class="form-control" value="{{ $user->profile->other_phone ?? "" }}" required>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-3 my-auto">
-                            <h6>صفتك بالمستفيد</h6>
-                        </div>
-                        <div class="col-9">
-                            @if(isset($user->profile->relation))
-                                <select class="form-control" name="relation">
-                                    <option value="الابن" {{ ($user->profile->relation == "الابن") ? "selected":"" }}>الابن</option>
-                                    <option value="الوالد" {{ ($user->profile->relation == "الوالد") ? "selected":"" }}>الوالد</option>
-                                    <option value="الزوجة" {{ ($user->profile->relation == "الزوجة") ? "selected":"" }}>الزوجة</option>
-                                    <option value="الزوج" {{ ($user->profile->relation == "الزوج") ? "selected":"" }}>الزوج</option>
-                                    <option value="المستفيد نفسه" {{ ($user->profile->relation == "المستفيد نفسه") ? "selected":"" }}>المستفيد نفسه</option>
-                                </select>
-                            @else
-                                <select class="form-control" name="relation">
-                                    <option value="الابن">الابن</option>
-                                    <option value="الوالد">الوالد</option>
-                                    <option value="الزوجة">الزوجة</option>
-                                    <option value="الزوج">الزوج</option>
-                                    <option value="المستفيد نفسه">المستفيد نفسه</option>
-                                </select>
-                            @endif
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-3 my-auto">
-                            <h6>جئت من طرف</h6>
-                        </div>
-                        <div class="col-9">
-                            @if(isset($user->profile->redirect))
-                                <select class="form-control" name="redirect">
-                                    <option value="جوجل" {{ ($user->profile->redirect == "جوجل") ? "selected":"" }}>جوجل</option>
-                                    <option value="احد الاصدقاء" {{ ($user->profile->redirect == "احد الاصدقاء") ? "selected":"" }}>احد الاصدقاء</option>
-                                    <option value="منصة تواصل اجتماعي" {{ ($user->profile->redirect == "منصة تواصل اجتماعي") ? "selected":"" }}>منصة تواصل اجتماعي</option>
-                                </select>
-                            @else
-                                <select class="form-control" name="redirect">
-                                    <option value="جوجل">جوجل</option>
-                                    <option value="احد الاصدقاء">احد الاصدقاء</option>
-                                    <option value="منصة تواصل اجتماعي">منصة تواصل اجتماعي</option>
-                                </select>
-                            @endif
-                        </div>
-                    </div>
-                    <br>
+                        <br>
+                    @endif
                     <div class="row">
                         <div class="col-3 my-auto">
                             <h6>حالة الحساب</h6>
                         </div>
                         <div class="col-9">
-                            <input type="text" class="form-control" placeholder="حالة الحساب..." value="{{ (isset($user->profile) == 1) ? "مفعل":"غير مفعل" }}" disabled style="color: {{ (isset($user->profile) == 1) ? "green":"red" }}">
+                            @if($user->profile == "" and $user->phone_verfied_at == null)
+                                <input type="text" class="form-control" placeholder="حالة الحساب..." value="غير مفعل" disabled style="color: red">
+                            @elseif($user->profile != "" and $user->phone_verfied_at == null)
+                                <input type="text" class="form-control" placeholder="حالة الحساب..." value="البيانات مكتملة | غير مربوط بالواتساب" disabled>
+                            @elseif($user->profile == "" and $user->phone_verfied_at != null)
+                                <input type="text" class="form-control" placeholder="حالة الحساب..." value="البيانات غير مكتملة | مربوط بالواتساب" disabled>
+                            @elseif($user->profile != "" and $user->phone_verfied_at != null)
+                                <input type="text" class="form-control" placeholder="حالة الحساب..." value="مفعل" disabled style="color: #19ad19">
+                            @endif
                         </div>
                     </div>
                     <br>
@@ -185,6 +204,23 @@
                             </div>
                         </div>
                     </div>
+                    @if(Auth()->user()->membership == 3)
+                        <br>
+                        <div id="new-password-input">
+                            <div class="row">
+                                <div class="col-3 my-auto">
+                                    <h6>العضوية</h6>
+                                </div>
+                                <div class="col-9">
+                                    <select class="form-control" name="membership">
+                                        <option value="0" {{ ($user->membership == 0) ? "selected":"" }}>عميل</option>
+                                        <option value="1" {{ ($user->membership == 1) ? "selected":"" }}>سائق</option>
+                                        <option value="2" {{ ($user->membership == 2) ? "selected":"" }}>خدمة عملاء</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                     <br>
                     <div>
                         <input type="submit" value="حفظ" class="btn btn-primary">

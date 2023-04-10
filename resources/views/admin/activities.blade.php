@@ -41,8 +41,6 @@
                                     <select class="form-control" name="sort">
                                         <option value="created_at$$$DESC" {{ ($sort == 'created_at$$$DESC') ? "selected":"" }}>الأحدث للأقدم</option>
                                         <option value="created_at$$$ASC" {{ ($sort == 'created_at$$$ASC') ? "selected":"" }}>الأقدم للأحدث</option>
-                                        <option value="name$$$ASC" {{ ($sort == 'users.name$$$ASC') ? "selected":"" }}>أ الي ي</option>
-                                        <option value="name$$$DESC" {{ ($sort == 'users.name$$$DESC') ? "selected":"" }}>ي الي أ</option>
                                     </select>
                                 </div>
                             </div>
@@ -132,6 +130,8 @@
                 </form>
             </div>
             <br>
+            <h2 class="text-dark" align="start">النتائج (<span class="text-primary">{{ $activities->total() }}</span>)</h2>
+            <br>
             <table class="table table-bordered table-secondary table-responsive-lg">
                 <thead>
                 <th>#</th>
@@ -147,7 +147,24 @@
                     <tr>
                         <td>#{{ $activity->id }}</td>
                         <td>{{ $activity->cs->name ?? "محذوف" }}</td>
-                        <td>{{ $activity->cs->phone ?? "فارغ" }}</td>
+                        <td>
+                            <div class="dropdown" style="display: inline-block">
+                                <a class="text-decoration-none" type="button" id="dropdown-{{ $activity->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="$('div[aria-labelledby=dropdown-{{ $activity->id }}]').toggle()">
+                                    {{ $activity->cs->phone }}
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdown-{{ $activity->id }}">
+                                    <a href="https://api.whatsapp.com/send?phone=966{{ $activity->cs->phone }}" class="text-success">تواصل واتساب</a>
+                                    <br>
+                                    <a onclick="window.open('tel:966{{ $activity->cs->phone }}');" class="text-primary">مكالمة هاتفية</a>
+                                </div>
+                            </div>
+                            |
+                            @if($activity->cs->phone_verfied_at == null)
+                                <span class="text-danger">غير مربوط بالواتساب</span>
+                            @else
+                                <span class="text-success">مربوط بالواتساب</span>
+                            @endif
+                        </td>
                         @if($activity->option == 0)
                             <td>
                                 قام
@@ -181,6 +198,61 @@
                             <td>
                                 قام
                                 <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                بحظر المستخدم
+                                <a href="{{ route('admin.panel.user', ($activity->user_id)) }}">{{ $activity->user->name ?? "محذوف" }}</a>
+                            </td>
+                        @elseif($activity->option == 5)
+                            <td>
+                                قام
+                                <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                بفك الحظر عن المستخدم
+                                <a href="{{ route('admin.panel.user', ($activity->user_id)) }}">{{ $activity->user->name ?? "محذوف" }}</a>
+                            </td>
+                        @elseif($activity->option == 6)
+                            <td>
+                                قام
+                                <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                بتمييز المستخدم
+                                <a href="{{ route('admin.panel.user', ($activity->user_id)) }}">{{ $activity->user->name ?? "محذوف" }}</a>
+                                بعلامة مميزة
+                            </td>
+                        @elseif($activity->option == 7)
+                            <td>
+                                قام
+                                <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                بإزالة العلامة المميزة من المستخدم
+                                <a href="{{ route('admin.panel.user', ($activity->user_id)) }}">{{ $activity->user->name ?? "محذوف" }}</a>
+                            </td>
+                        @elseif($activity->option == 8)
+                            <td>
+                                قام
+                                <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                بإزالة مستخدم
+                            </td>
+                        @elseif($activity->option == 9)
+                            <td>
+                                قام
+                                <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                بإضافة سيارة جديدة
+                                <a href="{{ route('admin.panel.car.edit', ($activity->car_id ?? "000000")) }}">{{ $activity->car->number ?? "محذوف" }}</a>
+                            </td>
+                        @elseif($activity->option == 10)
+                            <td>
+                                قام
+                                <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                بتعديل معلومات السيارة
+                                <a href="{{ route('admin.panel.car.edit', ($activity->car_id ?? "000000")) }}">{{ $activity->car->number ?? "محذوف" }}</a>
+                            </td>
+                        @elseif($activity->option == 11)
+                            <td>
+                                قام
+                                <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                بإزالة سيارة
+                            </td>
+                        @elseif($activity->option == 12)
+                            <td>
+                                قام
+                                <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
                                 بإنشاء طلبات رحلة متعددة
                             </td>
                         @endif
@@ -192,6 +264,23 @@
                 @endforeach
                 </tbody>
             </table>
+            <br><br>
+
+            @if ($activities->hasPages())
+                <ul class="pagination">
+                    @if ($activities->onFirstPage())
+                        <li class="disabled"><span>{{ __('Prev') }}</span></li>
+                    @else
+                        <li><a href="{{ $activities->previousPageUrl() }}" rel="prev">{{ __('Prev') }}</a></li>
+                    @endif
+                    {{ " Page " . $activities->currentPage() . "  of  " . $activities->lastPage() }}
+                    @if ($activities->hasMorePages())
+                        <li><a href="{{ $activities->nextPageUrl() }}" rel="next">{{ __('Next') }}</a></li>
+                    @else
+                        <li class="disabled"><span>{{ __('Next') }}</span></li>
+                    @endif
+                </ul>
+            @endif
         </div>
     </div>
     <br>

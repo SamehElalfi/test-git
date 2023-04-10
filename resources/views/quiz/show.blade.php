@@ -30,7 +30,7 @@
                 <br>
                 @if($order->status == 0)
                     <div class="alert alert-warning">
-                        <h6>تم إنشاء طلب الرحلة بنجاح وبإنتظار عملية تأكيد الرحلة و تحويلها الي السائق برجاء الإنتظار</h6>
+                        <h6>تستغرق مراجعة الرحلة بحد اقصي 10 دقائق</h6>
                     </div>
                 @elseif($order->status == 1)
                     <div class="alert alert-warning">
@@ -68,6 +68,20 @@
                     @method('PUT')
 
                     @if(isset($order->driver))
+                        {{--                    ID--}}
+                        <div id="driver" class="row my-3">
+                            <div class="col-3 my-auto">
+                                <h6>
+                                    رقم الرحلة
+                                </h6>
+                            </div>
+                            <div class="col-9">
+                                <h5 align="start">
+                                    <input type="text" name="id" class="form-control" value="{{ $order->slug ?? "00000000" }}" disabled>
+                                </h5>
+                            </div>
+                        </div>
+
                         {{--                    driver--}}
                         <div id="driver" class="row my-3">
                             <div class="col-3 my-auto">
@@ -84,6 +98,7 @@
                             </div>
                         </div>
 
+                        {{--                        Phone--}}
                         <div id="phone-driver" class="row my-3">
                             <div class="col-3 my-auto">
                                 <h6>
@@ -235,40 +250,38 @@
                         <div class="col-9">
                             @if($order->status == 0)
                                 <div class="alert alert-secondary" style="width: auto;max-width: 300px">
-                                    <b>قيد المراجعة</b>
+                                    <b>قيد المعالجة</b>
                                 </div>
                             @elseif($order->status == 1)
                                 <div class="alert alert-warning" style="width: auto;max-width: 300px">
-                                    <b>تم التأكيد</b>
+                                    <b>بإنتظار التحرك</b>
                                 </div>
                             @elseif($order->status == 2)
-                                <div class="alert alert-danger" style="width: auto;max-width: 300px">
-                                    <b>تم إلغاء الرحلة</b>
+                                <div class="alert alert-warning" style="width: auto;max-width: 300px">
+                                    <b>جاري التنفيذ</b>
                                 </div>
                             @elseif($order->status == 3)
                                 <div class="alert alert-success" style="width: auto;max-width: 300px">
-                                    <b>نجح التوصيل</b>
+                                    <b>تم التوصيل بنجاح</b>
+                                </div>
+                            @elseif($order->status == 4)
+                                <div class="alert alert-danger" style="width: auto;max-width: 300px">
+                                    <b>تم الإلغاء</b>
                                 </div>
                             @endif
                         </div>
                     </div>
                     <br>
-                    @if($order->status < 2)
-                        <a href="{{ route('quiz.cancel', $order->id) }}" class="btn btn-outline-danger mx-3" style="display: inline-block">إلغاء الرحلة</a>
-                        @if($order->status == 1)
-                            @if(auth()->user()->membership < 2)
-                                <a href="{{ route('quiz.success', $order->id) }}" class="btn btn-success mx-3" style="display: inline-block">تمت الرحلة</a>
-                            @endif
-                        @endif
-                        <br><br>
+                    @if(auth()->user()->membership > 1 and $order->status != 4)
+                        <a class="btn btn-outline-danger mx-3" onclick="$('#sub-cancel').click()" style="display: inline-block">إلغاء الرحلة</a>
                     @endif
-                    @if(auth()->user()->membership == 2 or auth()->user()->membership == 3)
+                    @if(auth()->user()->membership > 1)
                         <div id="status" class="row">
                             <div class="col-3 my-auto">
                                 <h6>معالجة الرحلة</h6>
                             </div>
                             <div class="col-9">
-                                @if($order->status == 0)
+                                @if($order->status < 3)
                                     <div align="start">
                                         <a href="{{ route('quiz.process', $order->id) }}" class="btn btn-primary">معالجة الطلب</a>
                                     </div>
@@ -280,6 +293,15 @@
                     @endif
                     <br><br>
                 </form>
+                <form method="post" action="{{ route('quiz.process.change', $order->id) }}" style="opacity: 0">
+                    @csrf
+                    @method('POST')
+                    <select name="status" class="form-control" style="width: 1px;height: 1px">
+                        <option value="4" selected>تم الإلغاء</option>
+                    </select>
+                    <input type="submit" id="sub-cancel" style="width: 1px;height: 1px">
+                </form>
+                <br><br>
             </div>
         </div>
     </div>

@@ -41,6 +41,7 @@ class SurveyController extends Controller
         $user_id = Auth::id();
         $this->validate($request, [
             'terms' => ['required'],
+            'type_tour' => ['required'],
             'reason' => ['required'],
             'needs' => ['required'],
             'date_tour' => ['required'],
@@ -56,10 +57,18 @@ class SurveyController extends Controller
             }
             $needs = implode(', ', $needs);
         }
+//        if (isset($request->return_option)){
+//            if ($request->return_option == 3){
+//
+//            }
+//        }
 
         $order = Survey::create([
             "user_id" => $user_id,
             "driver_id" => null,
+            "type_tour" => $request->type_tour ?? 0,
+            "return_option" => $request->return_date ?? 0,
+            "return_date_time" => $request->return_date_time ?? 'غير محدد',
             "reason" => $request->reason ?? "غير محدد",
             "needs" => $needs ?? "ليس بحاجة لمساعد",
             "date_tour" => $request->date_tour ?? "فارغ",
@@ -103,6 +112,12 @@ class SurveyController extends Controller
     {
         $status = $_POST['status'];
         $order = Survey::find($id);
+        if (isset($request->car)){
+            $car = Car::find($request->car);
+        }
+        if (in_array($order->status, [3, 4])){
+            return redirect()->back();
+        }
         $order->status = $status;
 
 //        Values of messages
@@ -160,6 +175,10 @@ class SurveyController extends Controller
             ]);
 
             $order->save();
+            if (isset($request->car)){
+                $car->orders = count($car->surveys);
+                $car->save();
+            }
             return redirect()->back()->with('success', "تمت معالجة الطلب \n وإرسال رسالة تأكيد الي العميل و الكابتن بنجاح");
         }elseif ($status == 2){
             $activity = DriverActivity::create([
@@ -312,7 +331,7 @@ class SurveyController extends Controller
             "user_id" => null,
             "driver_id" => null,
             "survey_id" => null,
-            "option" => 4,
+            "option" => 12,
             "seen" => 0,
         ]);
 

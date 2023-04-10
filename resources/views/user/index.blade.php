@@ -49,6 +49,15 @@
                     <input type="file" name="photo" style="width: 1px;height: 1px;opacity: 0">
                     <div class="row">
                         <div class="col-3 my-auto">
+                            <h6>رقم العميل</h6>
+                        </div>
+                        <div class="col-9">
+                            <input type="text" name="id" class="form-control" value="#{{ $user->id }}" disabled>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-3 my-auto">
                             <h6>اسم المستخدم</h6>
                         </div>
                         <div class="col-9">
@@ -175,7 +184,15 @@
                                 <h6>حالة الحساب</h6>
                             </div>
                             <div class="col-9">
-                                <input type="text" class="form-control" placeholder="حالة الحساب..." value="{{ (isset($user->profile) == 1) ? "مفعل":"غير مفعل" }}" disabled style="color: {{ (isset($user->profile) == 1) ? "green":"red" }}">
+                                @if($user->profile == "" and $user->phone_verfied_at == null)
+                                    <input type="text" class="form-control" placeholder="حالة الحساب..." value="غير مفعل" disabled style="color: red">
+                                @elseif($user->profile != "" and $user->phone_verfied_at == null)
+                                    <input type="text" class="form-control" placeholder="حالة الحساب..." value="البيانات مكتملة | غير مربوط بالواتساب" disabled>
+                                @elseif($user->profile == "" and $user->phone_verfied_at != null)
+                                    <input type="text" class="form-control" placeholder="حالة الحساب..." value="البيانات غير مكتملة | مربوط بالواتساب" disabled>
+                                @elseif($user->profile != "" and $user->phone_verfied_at != null)
+                                    <input type="text" class="form-control" placeholder="حالة الحساب..." value="مفعل" disabled style="color: #19ad19">
+                                @endif
                             </div>
                         </div>
                     @endif

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <?php use Illuminate\Support\Facades\Session as Session;?>?>
+    <?php use Illuminate\Support\Facades\Session as Session;?>
     <title>الملف الشخصي</title>
     <link href="{{ asset('css/profile.css') }}" rel="stylesheet">
     <style>
@@ -55,6 +55,20 @@
                     <input type="file" name="photo" style="width: 1px;height: 1px;opacity: 0">
                     <div class="row">
                         <div class="col-3 my-auto">
+                            <h6>السيارة</h6>
+                        </div>
+                        <div class="col-9">
+                            @if(isset($user->driver->car))
+                                <input type="text" placeholder="السيارة..." name="car" class="form-control" value="{{ "(".$user->driver->car->id.").". $user->driver->car->type . " (" . $user->driver->car->number . ")" }}" disabled>
+                            @else
+                                <input type="text" placeholder="السيارة..." name="car" class="form-control" value="لا يمتلك سيارة" disabled>
+                            @endif
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-3 my-auto">
                             <h6>اسم المستخدم</h6>
                         </div>
                         <div class="col-9">
@@ -62,6 +76,7 @@
                         </div>
                     </div>
                     <br>
+
                     <div class="row">
                         <div class="col-3 my-auto">
                             <h6>البريد الإلكتروني</h6>
@@ -89,6 +104,15 @@
                         </div>
                         <div class="col-9">
                             <input type="text" placeholder="الإسم بالكامل..." name="fullname" class="form-control" value="{{ $user->driver->fullname ?? "" }}" required>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-3 my-auto">
+                            <h6>رقم الهوية</h6>
+                        </div>
+                        <div class="col-9" align="start">
+                            <input type="text" placeholder="رقم الهوية..." name="personal_id" class="form-control" value="{{ $user->driver->personal_id ?? "" }}" required>
                         </div>
                     </div>
                     <br>

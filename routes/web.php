@@ -23,9 +23,16 @@ Route::group(['middleware' => ['auth', 'profile']], function () {
 
         // AdminController
         Route::get('admin/panel/users', [AdminController::class, 'users'])->name('admin.panel.users');
+        Route::get('admin/panel/activities', [AdminController::class, 'activities'])->name('admin.panel.activities');
+        Route::get('admin/panel/incomes', [AdminController::class, 'incomes'])->name('admin.panel.incomes');
+
+        // UserController
+        Route::get('user/add', [UserController::class, 'add_user'])->name('user.add');
+        Route::post('user/store', [UserController::class, 'store_user'])->name('user.store');
 
         //        Activities
         Route::get('cs/activities/{id}', [ActivityController::class, 'cs'])->name('cs.activities');
+
     });
 
 
@@ -38,9 +45,10 @@ Route::group(['middleware' => ['auth', 'profile']], function () {
         Route::get('admin/panel/awaits/orders', [AdminController::class, 'awaits_orders'])->name('admin.panel.awaits.orders');
         Route::get('admin/panel/confirmed/orders', [AdminController::class, 'confirmed_orders'])->name('admin.panel.confirmed.orders');
         Route::get('admin/panel/finished/orders', [AdminController::class, 'finished_orders'])->name('admin.panel.finished.orders');
+        Route::get('admin/panel/go_back/orders', [AdminController::class, 'go_back_orders'])->name('admin.panel.go_back.orders');
         Route::get('admin/panel/drivers', [AdminController::class, 'drivers'])->name('admin.panel.drivers');
-        Route::get('admin/panel/activities', [AdminController::class, 'activities'])->name('admin.panel.activities');
         Route::get('admin/panel/cars', [AdminController::class, 'cars'])->name('admin.panel.cars');
+        Route::get('admin/panel/orders_car', [AdminController::class, 'orders_car'])->name('admin.panel.orders_car');
         Route::get('admin/panel/clients', [AdminController::class, 'clients'])->name('admin.panel.clients');
         Route::get('cs/analytics/{id}', [AdminController::class, 'analytics'])->name('cs.analytics');
 
@@ -77,16 +85,15 @@ Route::group(['middleware' => ['auth', 'profile']], function () {
         // UserController
         Route::get('admin/panel/user/{user}', [UserController::class, 'info_user'])->name('admin.panel.user');
         Route::put('admin/panel/user/update/{user}', [UserController::class, 'update_user'])->name('admin.panel.user.update');
+        Route::get('client/create', [UserController::class, 'add_client'])->name('client.create');
+        Route::post('client/store', [UserController::class, 'store_client'])->name('client.store');
+        Route::get('user/delete/{id}', [UserController::class, 'delete_user'])->name('user.delete');
+        Route::get('user/block/{id}', [UserController::class, 'block_user'])->name('user.block');
+        Route::get('user/remove_block/{id}', [UserController::class, 'remove_block_user'])->name('user.remove_block');
+        Route::get('user/vip/{id}', [UserController::class, 'vip_user'])->name('user.vip');
+        Route::get('user/remove_vip/{id}', [UserController::class, 'remove_vip_user'])->name('user.remove_vip');
 
     });
-
-
-    // User Info
-    Route::get('profile', [UserController::class, 'index'])->name('profile');
-    Route::put('user/update', [UserController::class, 'update'])->name('user.update');
-    Route::get('user/get_otp', [UserController::class, 'get_otp'])->name('user.get_otp');
-    Route::post('user/active/otp', [UserController::class, 'otp'])->name('user.active.otp');
-
 
     Route::group(['middleware' => ['analytics']], function () {
 
@@ -109,17 +116,24 @@ Route::group(['middleware' => ['auth', 'profile']], function () {
     });
 
 
+    // User Info
+    Route::get('profile', [UserController::class, 'index'])->name('profile')->middleware('block');
+    Route::put('user/update', [UserController::class, 'update'])->name('user.update')->middleware('block');
+    Route::get('user/get_otp', [UserController::class, 'get_otp'])->name('user.get_otp');
+    Route::post('user/active/otp', [UserController::class, 'otp'])->name('user.active.otp');
+
+
     // Driver
     Route::get('driver/profile/{id}', [DriverController::class, 'show'])->name('driver.profile');
 
 
     // Quiz
-    Route::get('quizzes', [SurveyController::class, 'index'])->name('quizzes');
-    Route::get('quiz/create', [SurveyController::class, 'create'])->name('quiz.create');
-    Route::post('quiz/store', [SurveyController::class, 'store'])->name('quiz.store');
-    Route::put('quiz/update/{slug}', [SurveyController::class, 'update'])->name('quiz.update');
-    Route::get('quiz/show/{slug}', [SurveyController::class, 'show'])->name('quiz.show');
-    Route::get('quiz/edit/{slug}', [SurveyController::class, 'edit'])->name('quiz.edit');
+    Route::get('quizzes', [SurveyController::class, 'index'])->name('quizzes')->middleware('block');
+    Route::get('quiz/create', [SurveyController::class, 'create'])->name('quiz.create')->middleware('block');
+    Route::post('quiz/store', [SurveyController::class, 'store'])->name('quiz.store')->middleware('block');
+    Route::put('quiz/update/{slug}', [SurveyController::class, 'update'])->name('quiz.update')->middleware('block');
+    Route::get('quiz/show/{slug}', [SurveyController::class, 'show'])->name('quiz.show')->middleware('block');
+    Route::get('quiz/edit/{slug}', [SurveyController::class, 'edit'])->name('quiz.edit')->middleware('block');
     Route::get('quiz/cancel/{id}', [SurveyController::class, 'cancel'])->name('quiz.cancel');
     Route::get('quiz/success/{id}', [SurveyController::class, 'succeed'])->name('quiz.success');
 

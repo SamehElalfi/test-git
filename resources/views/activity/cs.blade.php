@@ -28,7 +28,7 @@
                                 <td>
                                     قام
                                     <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
-                                     بتأكيد طلب الرحلة
+                                    بتأكيد طلب الرحلة
                                     <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
                                 </td>
                             @elseif($activity->option == 1)
@@ -44,7 +44,7 @@
                                     <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
                                     بتمييز طلب الرحلة
                                     <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
-                                     كرحلة ناجحة
+                                    كرحلة ناجحة
                                 </td>
                             @elseif($activity->option == 3)
                                 <td>
@@ -54,6 +54,61 @@
                                     <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
                                 </td>
                             @elseif($activity->option == 4)
+                                <td>
+                                    قام
+                                    <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                    بحظر المستخدم
+                                    <a href="{{ route('admin.panel.user', ($activity->user_id)) }}">{{ $activity->user->name ?? "محذوف" }}</a>
+                                </td>
+                            @elseif($activity->option == 5)
+                                <td>
+                                    قام
+                                    <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                    بفك الحظر عن المستخدم
+                                    <a href="{{ route('admin.panel.user', ($activity->user_id)) }}">{{ $activity->user->name ?? "محذوف" }}</a>
+                                </td>
+                            @elseif($activity->option == 6)
+                                <td>
+                                    قام
+                                    <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                    بتمييز المستخدم
+                                    <a href="{{ route('admin.panel.user', ($activity->user_id)) }}">{{ $activity->user->name ?? "محذوف" }}</a>
+                                    بعلامة مميزة
+                                </td>
+                            @elseif($activity->option == 7)
+                                <td>
+                                    قام
+                                    <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                    بإزالة العلامة المميزة من المستخدم
+                                    <a href="{{ route('admin.panel.user', ($activity->user_id)) }}">{{ $activity->user->name ?? "محذوف" }}</a>
+                                </td>
+                            @elseif($activity->option == 8)
+                                <td>
+                                    قام
+                                    <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                    قمت بإزالة مستخدم
+                                </td>
+                            @elseif($activity->option == 9)
+                                <td>
+                                    قام
+                                    <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                    بإضافة سيارة جديدة
+                                    <a href="{{ route('admin.panel.car.edit', ($activity->car_id ?? "000000")) }}">{{ $activity->car->number ?? "محذوف" }}</a>
+                                </td>
+                            @elseif($activity->option == 10)
+                                <td>
+                                    قام
+                                    <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                    بتعديل معلومات السيارة
+                                    <a href="{{ route('admin.panel.car.edit', ($activity->car_id ?? "000000")) }}">{{ $activity->car->number ?? "محذوف" }}</a>
+                                </td>
+                            @elseif($activity->option == 11)
+                                <td>
+                                    قام
+                                    <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>
+                                    بإزالة سيارة
+                                </td>
+                            @elseif($activity->option == 12)
                                 <td>
                                     قام
                                     <a href="{{ route('admin.panel.user', ($activity->cs_id ?? "000000")) }}">{{ $activity->cs->name ?? "محذوف" }}</a>

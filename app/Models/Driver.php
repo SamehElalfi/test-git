@@ -18,6 +18,12 @@ class Driver extends Model
         'status'
     ];
 
+
+    public function car()
+    {
+        return $this->hasOne('App\Models\Car');
+    }
+
     public function user()
     {
         return $this->belongsTo('App\Models\User', 'user_id');

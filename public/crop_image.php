@@ -12,6 +12,9 @@ if ($array[count($array) - 1] == 'jpg' or $array[count($array) - 1] == 'jpeg'){
     $image = false;
     $image_data = file_get_contents($destination.$NewImageName);
     try {
+//        echo $destination;
+//        echo $NewImageName;
+        return;
         $image = imagecreatefromstring($destination.$NewImageName);
     } catch (Exception $ex) {
         $image = false;

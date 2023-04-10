@@ -2,6 +2,8 @@
 
 @section('content')
     <title>إدارة الرحلات</title>
+
+{{--    <link rel="stylesheet" href="{{ asset('css/range_price.css') }}">--}}
     <div class="container-xl">
         <div class="card shadow-lg bg-white py-4 px-4" style="border-radius: 40px">
             <div align="end">
@@ -51,8 +53,10 @@
                                     <select class="form-control" name="sort">
                                         <option value="created_at$$$DESC" {{ ($sort == 'created_at$$$DESC') ? "selected":"" }}>الأحدث للأقدم</option>
                                         <option value="created_at$$$ASC" {{ ($sort == 'created_at$$$ASC') ? "selected":"" }}>الأقدم للأحدث</option>
-                                        <option value="name$$$ASC" {{ ($sort == 'users.name$$$ASC') ? "selected":"" }}>أ الي ي</option>
-                                        <option value="name$$$DESC" {{ ($sort == 'users.name$$$DESC') ? "selected":"" }}>ي الي أ</option>
+                                        <option value="cost$$$ASC" {{ ($sort == 'created_at$$$DESC') ? "selected":"" }}>المبلغ الأقل - الأكبر</option>
+                                        <option value="cost$$$DESC" {{ ($sort == 'created_at$$$ASC') ? "selected":"" }}>المبلغ الأكثر - الأقل</option>
+                                        <option value="notes$$$ASC" {{ ($sort == 'notes$$$ASC') ? "selected":"" }}>أ الي ي</option>
+                                        <option value="notes$$$DESC" {{ ($sort == 'notes$$$DESC') ? "selected":"" }}>ي الي أ</option>
                                     </select>
                                 </div>
                             </div>
@@ -100,6 +104,28 @@
                             </div>
                         </div>
 
+{{--                        range price--}}
+                        <div class="col-12 my-2">
+                            <div class="price-input">
+                                <div class="field" style="display: inline-block;width: 30%">
+{{--                                    <span>من</span>--}}
+                                    <input type="number" class="form-control" value="2500" style="display: inline-block">
+                                </div>
+                                <div class="separator">-</div>
+                                <div class="field" style="display: inline-block;width: 30%">
+{{--                                    <span>الي</span>--}}
+                                    <input type="number" class="form-control" value="7500">
+                                </div>
+                            </div>
+                            <div class="slider" style="display: inline-block">
+                                <div class="progress"></div>
+                            </div>
+                            <div class="range-input">
+                                <input type="range" class="range-min" name="min-price" min="0" max="10000" value="2500" step="1">
+                                <input type="range" class="range-max" name="max-price" min="0" max="10000" value="7500" step="1">
+                            </div>
+                        </div>
+
                         {{--                        Countries--}}
                         <div class="col-6 my-2">
                             <div class="row">
@@ -143,12 +169,15 @@
             </div>
 
             <br>
+            <h2 class="text-dark" align="start">النتائج (<span class="text-primary">{{ $orders->total() }}</span>)</h2>
+            <br>
             <table class="table table-bordered table-secondary table-responsive-lg">
                 <thead>
                 <th>#</th>
                 <th>السائق</th>
                 <th>إسم العميل</th>
                 <th>رقم السيارة</th>
+                <th>حجم المبالغ</th>
                 <th>موعد بدء الرحلة</th>
                 <th>مكان الإقلاع</th>
                 <th>مكان الوصول</th>
@@ -172,14 +201,20 @@
                                 غير محدد
                             @endif
                         </td>
-                        <td>
+                        <td style="width: 150px">
                             @if(isset($order->user))
-                                <a href="{{ route('admin.panel.user', $order->user_id) }}">{{ $order->user->name ?? "فارغ" }}</a>
+                                <a href="{{ route('admin.panel.user', $order->user_id) }}">
+                                    @if($order->user->vip == 1)
+                                        <sup class="text-warning"><i class="fa-solid fa-star"></i></sup>
+                                    @endif
+                                    {{ $order->user->name ?? "فارغ" }}
+                                </a>
                             @else
                                 غير محدد
                             @endif
                         </td>
                         <td>{{ $order->car->number ?? "غير محدد" }}</td>
+                        <td>{{ $order->cost ?? "غير محدد" }} ريال</td>
                         <td>{{ ($order->date_tour ?? "غير محدد").($order->time_date_tour ?? "غير محدد") }}</td>
                         <td>{{ $order->start_point ?? "فارغ" }}</td>
                         <td>{{ $order->end_point ?? "فارغ" }}</td>
@@ -216,7 +251,26 @@
                 @endforeach
                 </tbody>
             </table>
+
+            <br><br>
+
+            @if ($orders->hasPages())
+                <ul class="pagination">
+                    @if ($orders->onFirstPage())
+                        <li class="disabled"><span>{{ __('Prev') }}</span></li>
+                    @else
+                        <li><a href="{{ $orders->previousPageUrl() }}" rel="prev">{{ __('Prev') }}</a></li>
+                    @endif
+                    {{ " Page " . $orders->currentPage() . "  of  " . $orders->lastPage() }}
+                    @if ($orders->hasMorePages())
+                        <li><a href="{{ $orders->nextPageUrl() }}" rel="next">{{ __('Next') }}</a></li>
+                    @else
+                        <li class="disabled"><span>{{ __('Next') }}</span></li>
+                    @endif
+                </ul>
+            @endif
         </div>
     </div>
     <br>
+    <script src="{{ asset('js/range_price.js') }}"></script>
 @endsection

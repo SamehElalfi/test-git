@@ -36,6 +36,46 @@
                     @csrf
                     @method('POST')
 
+
+                    {{--                    Type of tour--}}
+                    <div class="row my-3">
+                        <div class="col-3 my-auto">
+                            <h6>نوع الرحلة</h6>
+                        </div>
+                        <div class="col-9">
+                            <select id="type_tour" class="form-control" name="type_tour" onchange="type_tour_change()">
+                                <option value="0">رحلة ذهاب او عودة فقط</option>
+                                <option value="1">رحلة عودة منتظرة</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="return_tour_options" style="display: none">
+                        {{--                    How can i take your after tour--}}
+                        <div id="options_return" class="row my-3">
+                            <div class="col-3 my-auto">
+                                <h6>تاريخ ووقت العودة</h6>
+                            </div>
+                            <div class="col-9">
+                                <select id="options_return_input" class="form-control" name="return_date" onchange="set_date_return()">
+                                    <option value="1">خدمة الإنتظار حتي العودة</option>
+                                    <option value="2">الإتصال عند الإنتهاء</option>
+                                    <option value="3">تحديد وقت معين</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        {{--                    Date what how can i take your after tour--}}
+                        <div id="date_return" class="row my-3" style="display: none">
+                            <div class="col-3 my-auto">
+                                <h6>حدد التاريخ</h6>
+                            </div>
+                            <div class="col-9">
+                                <input type="datetime-local" class="form-control" name="return_date_time" required>
+                            </div>
+                        </div>
+                    </div>
+
 {{--                    name--}}
                     <div id="name" class="row my-3">
                         <div class="col-3 my-auto">

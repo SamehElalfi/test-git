@@ -26,28 +26,67 @@
                             <th>{{ $activity->created_at }}</th>
                             @if($activity->option == 0)
                                 <td>
-                                    تم تأكيد طلب الرحلة
+                                    قمت بتأكيد طلب الرحلة
                                     <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
                                 </td>
                             @elseif($activity->option == 1)
                                 <td>
-                                    تم إلغاء طلب الرحلة
+                                    قمت بإلغاء طلب الرحلة
                                     <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
                                 </td>
                             @elseif($activity->option == 2)
                                 <td>
-                                    تم وصول طلب الرحلة
+                                    قمت بتمييز طلب الرحلة
                                     <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
-                                    بنجاح
+                                    كرحلة ناجحة
                                 </td>
                             @elseif($activity->option == 3)
                                 <td>
-                                    تم إنشاء طلب رحلة جديدة
+                                    قمت بإنشاء طلب رحلة جديد
                                     <a href="{{ route('quiz.show', ($activity->order->slug ?? "000000")) }}">#{{ $activity->order->slug ?? "محذوف" }}</a>
                                 </td>
                             @elseif($activity->option == 4)
                                 <td>
-                                    تم إنشاء طلبات رحلة متعددة
+                                    قمت بحظر المستخدم
+                                    <a href="{{ route('admin.panel.user', ($activity->user_id)) }}">{{ $activity->user->name ?? "محذوف" }}</a>
+                                </td>
+                            @elseif($activity->option == 5)
+                                <td>
+                                    قمت بفك الحظر عن المستخدم
+                                    <a href="{{ route('admin.panel.user', ($activity->user_id)) }}">{{ $activity->user->name ?? "محذوف" }}</a>
+                                </td>
+                            @elseif($activity->option == 6)
+                                <td>
+                                    قمت بتمييز المستخدم
+                                    <a href="{{ route('admin.panel.user', ($activity->user_id)) }}">{{ $activity->user->name ?? "محذوف" }}</a>
+                                    بعلامة مميزة
+                                </td>
+                            @elseif($activity->option == 7)
+                                <td>
+                                    قمت بإزالة العلامة المميزة من المستخدم
+                                    <a href="{{ route('admin.panel.user', ($activity->user_id)) }}">{{ $activity->user->name ?? "محذوف" }}</a>
+                                </td>
+                            @elseif($activity->option == 8)
+                                <td>
+                                    قمت بإزالة مستخدم
+                                </td>
+                            @elseif($activity->option == 9)
+                                <td>
+                                    قمت بإضافة سيارة جديدة
+                                    <a href="{{ route('admin.panel.car.edit', ($activity->car_id ?? "000000")) }}">{{ $activity->car->number ?? "محذوف" }}</a>
+                                </td>
+                            @elseif($activity->option == 10)
+                                <td>
+                                    قمت بتعديل معلومات السيارة
+                                    <a href="{{ route('admin.panel.car.edit', ($activity->car_id ?? "000000")) }}">{{ $activity->car->number ?? "محذوف" }}</a>
+                                </td>
+                            @elseif($activity->option == 11)
+                                <td>
+                                    قمت بإزالة سيارة
+                                </td>
+                            @elseif($activity->option == 12)
+                                <td>
+                                    قمت بإنشاء طلبات رحلة متعددة
                                 </td>
                             @endif
                         </tr>

@@ -10,6 +10,7 @@ class CsActivity extends Model
         'cs_id',
         'user_id',
         'driver_id',
+        'car_id',
         'survey_id',
         'option',
         'seen'
@@ -35,5 +36,10 @@ class CsActivity extends Model
     public function order()
     {
         return $this->belongsTo('App\Models\Survey', 'survey_id');
+    }
+
+    public function car()
+    {
+        return $this->belongsTo('App\Models\Car', 'car_id');
     }
 }

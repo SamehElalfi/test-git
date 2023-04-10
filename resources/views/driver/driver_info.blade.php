@@ -57,6 +57,19 @@
                     <input type="file" name="photo" style="width: 1px;height: 1px;opacity: 0">
                     <div class="row">
                         <div class="col-3 my-auto">
+                            <h6>السيارة</h6>
+                        </div>
+                        <div class="col-9" align="start">
+                            @if(isset($user->driver->car))
+                                <h6 class="text-dark">{{ "(".$user->driver->car->id.").". $user->driver->car->type . " (" . $user->driver->car->number . ")" }}</h6>
+                            @else
+                                <h6 class="text-danger">لا يمتلك سيارة</h6>
+                            @endif
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-3 my-auto">
                             <h6>اسم المستخدم</h6>
                         </div>
                         <div class="col-9">
@@ -88,6 +101,15 @@
                         </div>
                         <div class="col-9">
                             <input type="text" placeholder="الإسم بالكامل..." name="fullname" class="form-control" value="{{ $user->driver->fullname ?? "" }}" required>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-3 my-auto">
+                            <h6>رقم الهوية:</h6>
+                        </div>
+                        <div class="col-9" align="start">
+                            <input type="text" placeholder="رقم الهوية..." name="personal_id" class="form-control" value="{{ $user->driver->personal_id ?? "" }}" required>
                         </div>
                     </div>
                     <br>
@@ -145,6 +167,23 @@
                             </div>
                         </div>
                     </div>
+                    @if(Auth()->user()->membership == 3)
+                        <br>
+                        <div id="new-password-input">
+                            <div class="row">
+                                <div class="col-3 my-auto">
+                                    <h6>العضوية</h6>
+                                </div>
+                                <div class="col-9">
+                                    <select class="form-control" name="membership">
+                                        <option value="0" {{ ($user->membership == 0) ? "selected":"" }}>عميل</option>
+                                        <option value="1" {{ ($user->membership == 1) ? "selected":"" }}>سائق</option>
+                                        <option value="2" {{ ($user->membership == 2) ? "selected":"" }}>خدمة عملاء</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                     <br>
                     <div>
                         <input type="submit" value="حفظ" class="btn btn-primary">

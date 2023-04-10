@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <?php use Illuminate\Support\Facades\Session as Session;?>?>
+    <?php use Illuminate\Support\Facades\Session as Session;?>
     <title>اضافة سيارة جديدة</title>
     <style>
 
@@ -36,23 +36,63 @@
                     </div>
                 @endif
                 <br>
-                <form method="post" action="{{ route('admin.panel.car.store') }}">
+                <form method="post" action="{{ route('admin.panel.car.store') }}" enctype="multipart/form-data">
                     @csrf
                     @method('POST')
 
-                    {{--                    the name of car or model--}}
+                    {{--                    driver--}}
                     <div id="name" class="row my-3">
                         <div class="col-3 my-auto">
                             <h6>
-                                إسم السيارة
+                                الكابتن
                             </h6>
                         </div>
                         <div class="col-9">
-                            <input type="text" placeholder="إسم السيارة..." name="name" class="form-control">
+                            <select class="form-control" name="driver_id" required>
+                                @foreach($drivers as $driver)
+                                    <option value="{{ $driver->id }}">{{ "($driver->id)" . ". " . ($driver->fullname ?? "غير محدد") . " " . (($driver->country->name ?? "غير محدد") . " / " . ($driver->state->name ?? "غير محدد")) }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
 
-                    {{--                    type of car--}}
+                    {{--                    car number--}}
+                    <div id="name" class="row my-3">
+                        <div class="col-3 my-auto">
+                            <h6>
+                                رقم السيارة
+                            </h6>
+                        </div>
+                        <div class="col-9">
+                            <input type="text" placeholder="رقم لوحة السيارة..." name="number" class="form-control">
+                        </div>
+                    </div>
+
+                    {{--                    date made--}}
+                    <div id="phone" class="row my-3">
+                        <div class="col-3 my-auto">
+                            <h6>
+                                سنة الصنع
+                            </h6>
+                        </div>
+                        <div class="col-9">
+                            <input type="date" name="made_from" class="form-control">
+                        </div>
+                    </div>
+
+                    {{--                    date made--}}
+                    <div id="phone" class="row my-3">
+                        <div class="col-3 my-auto">
+                            <h6>
+                                تاريخ اخر صيانة
+                            </h6>
+                        </div>
+                        <div class="col-9">
+                            <input type="date" name="last_repair" class="form-control">
+                        </div>
+                    </div>
+
+                    {{--                    Type--}}
                     <div id="phone" class="row my-3">
                         <div class="col-3 my-auto">
                             <h6>
@@ -64,27 +104,15 @@
                         </div>
                     </div>
 
-                    {{--                    passengers--}}
+                    {{--                    Photo--}}
                     <div id="phone" class="row my-3">
                         <div class="col-3 my-auto">
                             <h6>
-                                عدد الركاب
+                                صورة السيارة
                             </h6>
                         </div>
                         <div class="col-9">
-                            <input type="number" placeholder="عدد الركاب..." name="count" class="form-control">
-                        </div>
-                    </div>
-
-                    {{--                    Car Number--}}
-                    <div id="phone" class="row my-3">
-                        <div class="col-3 my-auto">
-                            <h6>
-                                رقم السيارة
-                            </h6>
-                        </div>
-                        <div class="col-9">
-                            <input type="text" placeholder="رقم السيارة..." name="number" class="form-control">
+                            <input type="file"  name="photo" class="form-control">
                         </div>
                     </div>
 

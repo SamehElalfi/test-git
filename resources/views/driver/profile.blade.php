@@ -22,6 +22,19 @@
                 <br>
                 <div class="row">
                     <div class="col-3 my-auto">
+                        <h6>السيارة</h6>
+                    </div>
+                    <div class="col-9" align="start">
+                        @if(isset($user->driver->car))
+                            <h6 class="text-dark">{{ "(".$user->driver->car->id.").". $user->driver->car->type . " (" . $user->driver->car->number . ")" }}</h6>
+                        @else
+                            <h6 class="text-danger">لا يمتلك سيارة</h6>
+                        @endif
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-3 my-auto">
                         <h6>اسم المستخدم:</h6>
                     </div>
                     <div class="col-9" align="start">
@@ -53,6 +66,15 @@
                     </div>
                     <div class="col-9" align="start">
                         <h6 style="opacity: 80%">{{ $user->driver->fullname ?? "فارغ" }}</h6>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-3 my-auto">
+                        <h6>رقم الهوية:</h6>
+                    </div>
+                    <div class="col-9" align="start">
+                        <h6 style="opacity: 80%">{{ $user->driver->personal_id ?? "فارغ" }}</h6>
                     </div>
                 </div>
                 <br>
